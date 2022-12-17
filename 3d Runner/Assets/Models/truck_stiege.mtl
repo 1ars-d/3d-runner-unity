@@ -1,0 +1,142 @@
+# Blender MTL File: 'truck_stiege.blend'
+# Material Count: 13
+
+newmtl None
+Ns 500
+Ka 0.8 0.8 0.8
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+
+newmtl lambert18
+Ns 179.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\Unity\\Spiele\\Eigenes Multiplayer Game\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Texture_02_B.png
+
+newmtl lambert18.001
+Ns 179.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\Unity\\Spiele\\Eigenes Multiplayer Game\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Texture_01_B.png
+
+newmtl lambert18.007
+Ns 179.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\Unity\\Spiele\\Eigenes Multiplayer Game\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Texture_02_B.png
+
+newmtl lambert18.008
+Ns 179.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\Unity\\Spiele\\Eigenes Multiplayer Game\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Texture_02_B.png
+
+newmtl lambert18.009
+Ns 179.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\Unity\\Spiele\\Eigenes Multiplayer Game\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Texture_02_B.png
+
+newmtl lambert18.010
+Ns 179.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\Unity\\Spiele\\Eigenes Multiplayer Game\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Texture_02_B.png
+
+newmtl lambert18.011
+Ns 179.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\Unity\\Spiele\\Eigenes Multiplayer Game\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Texture_02_B.png
+
+newmtl lambert18.012
+Ns 179.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\Unity\\Spiele\\Eigenes Multiplayer Game\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Texture_02_B.png
+
+newmtl lambert18.013
+Ns 179.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\Unity\\Spiele\\Eigenes Multiplayer Game\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Texture_02_B.png
+
+newmtl lambert18.014
+Ns 179.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\Unity\\Spiele\\Eigenes Multiplayer Game\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Texture_02_B.png
+
+newmtl lambert18.016
+Ns 179.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\Unity\\Spiele\\Eigenes Multiplayer Game\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Texture_01_B.png
+
+newmtl lambert18.017
+Ns 179.999996
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\Unity\\Spiele\\Eigenes Multiplayer Game\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Texture_01_B.png
