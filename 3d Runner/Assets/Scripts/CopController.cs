@@ -50,7 +50,7 @@ public class CopController : MonoBehaviour
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        StartCoroutine(BackUp(2f));
+        StartCoroutine(BackUp(4f));
     }
 
     private IEnumerator MoveTowardsPlayer(float duration)

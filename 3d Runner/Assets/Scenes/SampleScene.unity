@@ -7640,6 +7640,7 @@ MonoBehaviour:
   _maxLoadedChunks: 4
   _chunkLength: 49.5
   _chunksList:
+  - {fileID: 4181881787378938510, guid: 96ed91443da1c1847ade9be0d6fa6b8c, type: 3}
   - {fileID: 4181881787378938510, guid: 5a351ca3939536a4e9c996df052f77ad, type: 3}
   - {fileID: 4181881787378938510, guid: 841f9377a72adf04dbfd25c965e44bea, type: 3}
   - {fileID: 4181881787378938510, guid: c46b7295cc7c651498789e0e94ce7232, type: 3}
@@ -10133,7 +10134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2100585732, guid: ddc5a312c3a64fa4490c1bac3a6ee6b8, type: 3}
       propertyPath: _jumpPower
-      value: 6
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2100585732, guid: ddc5a312c3a64fa4490c1bac3a6ee6b8, type: 3}
       propertyPath: _dodgeSpeed

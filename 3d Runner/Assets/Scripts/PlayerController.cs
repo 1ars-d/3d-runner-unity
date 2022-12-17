@@ -200,7 +200,7 @@ public class PlayerController : MonoBehaviour
         {
             if (_isFalling)
             {
-                if (m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Falling") && !_inRoll)
+                if (/*m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Falling") && */!_inRoll)
                 {
                     m_Animator.CrossFadeInFixedTime("Running", 0.15f);
                 }
@@ -214,7 +214,6 @@ public class PlayerController : MonoBehaviour
             if (m_char.velocity.y < -0.05f)
             {
                 _isFalling = true;
-                m_Animator.SetTrigger("Falling");
             }
         }
     }
@@ -225,7 +224,14 @@ public class PlayerController : MonoBehaviour
         if (m_char.isGrounded)
         {
             _yPos = _jumpPower;
-            m_Animator.CrossFadeInFixedTime("Jump", 0.1f);
+            if (Random.Range(0, 2) == 0)
+            {
+                m_Animator.CrossFadeInFixedTime("Jump", 0.1f);
+            } else
+            {
+                m_Animator.CrossFadeInFixedTime("JumpMirror", 0.1f);
+            }
+
             _inJump = true;
             _isFalling = false;
         }
@@ -270,7 +276,7 @@ public class PlayerController : MonoBehaviour
             _playerCollider.center = new Vector3(0, _capsuleColCenterY / 3f + .1f, 0);
             m_char.center = new Vector3(0, _colCenterY / 3f, 0);
             m_char.height = _colHeight / 3f;
-            if (Random.Range(0, 3) == 0)
+            if (Random.Range(0, 10) == 0)
             {
                 m_Animator.CrossFadeInFixedTime("Slide", 0.15f);
             } else
@@ -309,8 +315,6 @@ public class PlayerController : MonoBehaviour
     private void StumbleHit()
     {
         if (_nextStumbleDelay > 0) return;
-        _nextStumbleDelay = .2f;
-        _stumbling = true;
         StartCoroutine(_camController.Shake(0.1f, 0.07f));
         if (_stumbleTimer > 0)
         {
@@ -319,6 +323,8 @@ public class PlayerController : MonoBehaviour
             _gameStarted = false;
             return;
         }
+        _nextStumbleDelay = .1f;
+        _stumbling = true;
         _cop.SetActive(true);
         StartCoroutine(_copController.MoveTowardsPlayerStumble(1.5f));
         _hitStars.SetActive(true);
