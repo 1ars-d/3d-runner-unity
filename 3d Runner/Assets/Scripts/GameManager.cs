@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public bool _playerDied;
     PlayerController _playerController;
     TerrainController _terrainController;
+    CopController _copController;
 
     [Header("Other GOs")]
     [SerializeField] private GameObject _terrainGO;
@@ -47,6 +48,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _copController = GameObject.FindGameObjectWithTag("Cop").GetComponent<CopController>();
         _playerDied = false;
         _currentDeathTime = _deathTime;
         _currentCoinSize = _coinSize;
@@ -113,6 +115,7 @@ public class GameManager : MonoBehaviour
         _playerController.StartRunning();
         _cam.SetCameraPos();
         _terrainController.StartMoving();
+        _copController.StartMoving();
     }
 
     public void RestartGame()

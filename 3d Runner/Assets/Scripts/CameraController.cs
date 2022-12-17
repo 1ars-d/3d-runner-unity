@@ -9,14 +9,19 @@ public class CameraController : MonoBehaviour
     [Header("Camera Positions")]
     [SerializeField] private Vector3 _startCameraOffset;
     [SerializeField] private Vector3 _startCameraRotation;
+    [SerializeField] private Vector3 _lookAtCopPosition;
+    [SerializeField] private float _startFOV;
+    [SerializeField] private float _endFOV;
     private Vector3 _leanCameraOffset;
     private Vector3 _leanCameraRotation;
 
     [Header("Camera Speed")]
     [SerializeField] private float _panDuration = 1f;
+    [SerializeField] private float _lookAtCopDuration = 0.3f;
     [SerializeField] private float _panDelay = 0.6f;
 
     Animator _camAnimator;
+    CinemachineVirtualCamera v_cam;
     CinemachineTransposer transposer;
 
     // Start is called before the first frame update
@@ -24,6 +29,7 @@ public class CameraController : MonoBehaviour
     {
         _camAnimator = GetComponent<Animator>();
         transposer = GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineTransposer>();
+        v_cam = GetComponent<CinemachineVirtualCamera>();
     }
 
     public void SetCameraPos()
@@ -31,8 +37,7 @@ public class CameraController : MonoBehaviour
         _camAnimator.enabled = false;
         _leanCameraOffset = transposer.m_FollowOffset;
         SetLeanRotation();
-        Debug.Log(_leanCameraOffset);
-        Debug.Log(_leanCameraRotation);
+        StartCoroutine(LookAtCop(_lookAtCopDuration));
         StartCoroutine(SetStartPosition(_panDuration));
         StartCoroutine(SetStartRotation(_panDuration));
     }
@@ -67,6 +72,20 @@ public class CameraController : MonoBehaviour
         _leanCameraRotation = rotation;
     }
 
+    private IEnumerator LookAtCop(float duration)
+    {
+        float timeElapsed = 0;
+        while (timeElapsed < duration)
+        {
+            float t = timeElapsed / duration;
+            t = t * t * (3f - 2f * t);
+            v_cam.m_Lens.FieldOfView = Mathf.Lerp(_startFOV, _endFOV, t);
+            transposer.m_FollowOffset = Vector3.Lerp(_leanCameraOffset, _lookAtCopPosition, t);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
     private IEnumerator SetStartPosition(float duration)
     {
         yield return new WaitForSeconds(_panDelay);
@@ -75,7 +94,7 @@ public class CameraController : MonoBehaviour
         {
             float t = timeElapsed / duration;
             t = t * t * (3f - 2f * t);
-            transposer.m_FollowOffset = Vector3.Lerp(_leanCameraOffset, _startCameraOffset, t);
+            transposer.m_FollowOffset = Vector3.Lerp(_lookAtCopPosition, _startCameraOffset, t);
             timeElapsed += Time.deltaTime;
             yield return null;
         }

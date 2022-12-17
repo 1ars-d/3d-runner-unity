@@ -8,6 +8,7 @@ TagManager:
   - GameManager
   - MoveableObstacle
   - Slope
+  - Cop
   layers:
   - Default
   - TransparentFX
