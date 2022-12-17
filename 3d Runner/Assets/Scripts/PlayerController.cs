@@ -39,21 +39,33 @@ public class PlayerController : MonoBehaviour
     private float _capsuleColCenterY;
 
     private Animator m_Animator;
-    private bool _gameStarted;
+    public bool _gameStarted;
     private GameManager _gameManager;
 
     [Header("Collision Detection")]
     [SerializeField] private HitX _hitX = HitX.None;
     [SerializeField] private HitY _hitY = HitY.None;
     [SerializeField] private HitZ _hitZ = HitZ.None;
+    [SerializeField] private float _stumbleTime;
     [SerializeField] private CapsuleCollider _playerCollider;
 
-    [Header("Script Refs")]
-    [SerializeField] private CameraController camController;
+    private float _stumbleTimer;
+    private bool _stumbling;
+    private float _nextStumbleDelay;
+
+    [Header("Script and GameObject Refs")]
+    [SerializeField] private CameraController _camController;
+    [SerializeField] private GameObject _cop;
+    [SerializeField] private GameObject _hitStars;
+
+    Animator _starsAnimator;
+    CopController _copController;
 
     // Start is called before the first frame update
     void Start()
     {
+        _copController = _cop.GetComponent<CopController>();
+        _starsAnimator = _hitStars.GetComponent<Animator>();
         _gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         _gameStarted = false;
         m_Animator = GetComponent<Animator>();
@@ -80,6 +92,7 @@ public class PlayerController : MonoBehaviour
         m_char.Move(moveVector);
         HandleJump();
         HandleRoll();
+        HandleStumble();
     }
 
     public void StartRunning()
@@ -100,7 +113,6 @@ public class PlayerController : MonoBehaviour
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        _gameStarted = true;
     }
 
     public void GoLeft()
@@ -109,7 +121,7 @@ public class PlayerController : MonoBehaviour
         if (m_side == SIDE.Mid)
         {
             _newXPos = -_xWidth;
-            m_last_side = m_side;
+            m_last_side = SIDE.Mid;
             m_side = SIDE.Left;
             if (m_char.isGrounded && !_inRoll)
             {
@@ -119,7 +131,7 @@ public class PlayerController : MonoBehaviour
         else if (m_side == SIDE.Right)
         {
             _newXPos = 0;
-            m_last_side = m_side;
+            m_last_side = SIDE.Right;
             m_side = SIDE.Mid;
             if (m_char.isGrounded && !_inRoll)
             {
@@ -155,7 +167,7 @@ public class PlayerController : MonoBehaviour
         if (m_side == SIDE.Mid)
         {
             _newXPos = _xWidth;
-            m_last_side = m_side;
+            m_last_side = SIDE.Mid;
             m_side = SIDE.Right;
             if (m_char.isGrounded && !_inRoll)
             {
@@ -165,7 +177,7 @@ public class PlayerController : MonoBehaviour
         else if (m_side == SIDE.Left)
         {
             _newXPos = 0;
-            m_last_side = m_side;
+            m_last_side = SIDE.Left;
             m_side = SIDE.Mid;
             if (m_char.isGrounded && !_inRoll)
             {
@@ -276,16 +288,52 @@ public class PlayerController : MonoBehaviour
         _hitZ = HitZ.None;
     }
 
+    private void HandleStumble()
+    {
+        if (_nextStumbleDelay > 0)
+        {
+            _nextStumbleDelay -= Time.deltaTime;
+        }
+        if (_stumbleTimer > 0)
+        {
+            _stumbleTimer -= Time.deltaTime;
+        }
+        if (_stumbling && _stumbleTimer <= 0)
+        {
+            _cop.SetActive(false);
+            _stumbling = false;
+            _starsAnimator.CrossFadeInFixedTime("fade_away", .1f);
+        }
+    }
+
+    private void StumbleHit()
+    {
+        if (_nextStumbleDelay > 0) return;
+        _nextStumbleDelay = .2f;
+        _stumbling = true;
+        StartCoroutine(_camController.Shake(0.1f, 0.07f));
+        if (_stumbleTimer > 0)
+        {
+            m_Animator.CrossFadeInFixedTime("Fall Over", .1f);
+            _gameManager.OnPlayerDied();
+            _gameStarted = false;
+            return;
+        }
+        _cop.SetActive(true);
+        StartCoroutine(_copController.MoveTowardsPlayerStumble(1.5f));
+        _hitStars.SetActive(true);
+        _starsAnimator.Play("stars_rotate");
+        _stumbleTimer = _stumbleTime;
+    }
+
     public void OnMoveableObstacleHit()
     {
-        StartCoroutine(camController.Shake(0.1f, 0.05f));
+        StumbleHit();
     }
 
     private void HitSide()
     {
-        Debug.Log(m_last_side);
-        Debug.Log(m_side);
-        StartCoroutine(camController.Shake(0.1f, 0.05f));
+        StumbleHit();
         if (m_last_side == SIDE.Right && m_side == SIDE.Mid)
         {
             _newXPos = _xWidth;
@@ -297,9 +345,26 @@ public class PlayerController : MonoBehaviour
         }
         else if (m_last_side == SIDE.Left && m_side == SIDE.Mid)
         {
-            Debug.Log("hello");
             _newXPos = -_xWidth;
             m_side = SIDE.Left;
+            if (m_char.isGrounded && !_inRoll)
+            {
+                m_Animator.CrossFadeInFixedTime("DodgeLeft", 0.15f);
+            }
+        }
+        else if (m_side == SIDE.Left && m_last_side == SIDE.Mid)
+        {
+            _newXPos = 0;
+            m_side = SIDE.Mid;
+            if (m_char.isGrounded && !_inRoll)
+            {
+                m_Animator.CrossFadeInFixedTime("DodgeRight", 0.15f);
+            }
+        }
+        else if (m_side == SIDE.Right && m_last_side == SIDE.Mid)
+        {
+            _newXPos = 0;
+            m_side = SIDE.Mid;
             if (m_char.isGrounded && !_inRoll)
             {
                 m_Animator.CrossFadeInFixedTime("DodgeLeft", 0.15f);
@@ -321,26 +386,8 @@ public class PlayerController : MonoBehaviour
             {
                 m_Animator.CrossFadeInFixedTime("DodgeRight", 0.15f);
             }
-        } else if (m_side == SIDE.Left && m_last_side == SIDE.Mid)
-        {
-            _newXPos = 0;
-            m_side = SIDE.Mid;
-            if (m_char.isGrounded && !_inRoll)
-            {
-                m_Animator.CrossFadeInFixedTime("DodgeRight", 0.15f);
-            }
-        }
-        else if (m_side == SIDE.Right && m_last_side == SIDE.Mid)
-        {
-            _newXPos = 0;
-            m_side = SIDE.Mid;
-            if (m_char.isGrounded && !_inRoll)
-            {
-                m_Animator.CrossFadeInFixedTime("DodgeLeft", 0.15f);
-            }
         }
     }
-
 
     public void OnCharacterCollideHit(Collider col)
     {
@@ -349,36 +396,26 @@ public class PlayerController : MonoBehaviour
         _hitY = GetHitY(col);
         _hitZ = GetHitZ(col);
 
+        if (_hitY == HitY.Low && _hitX == HitX.Mid) return;
         if (_hitZ == HitZ.Forward && _hitX == HitX.Mid) // Death
         {
-            StartCoroutine(camController.Shake(0.1f, 0.05f));
+            StartCoroutine(_camController.Shake(0.1f, 0.05f));
             _gameManager.OnPlayerDied();
             m_Animator.CrossFadeInFixedTime("Fall Over", .1f);
             _gameStarted = false;
         }
         else if (_hitZ == HitZ.Mid)
         {
-            if (_hitX == HitX.Right)
-            {
-                HitSide();
-            }
-            else if (_hitX == HitX.Left)
+            if (_hitX == HitX.Right || _hitX == HitX.Left)
             {
                 HitSide();
             }
         }
         else
         {
-            if (_hitX == HitX.Right)
+            if (_hitX == HitX.Right || _hitX == HitX.Left)
             {
-                StartCoroutine(camController.Shake(0.1f, 0.05f));
-                _gameManager.OnPlayerDied();
-                m_Animator.CrossFadeInFixedTime("Fall Over", .1f);
-                _gameStarted = false;
-            }
-            else if (_hitX == HitX.Left)
-            {
-                StartCoroutine(camController.Shake(0.1f, 0.05f));
+                StartCoroutine(_camController.Shake(0.1f, 0.05f));
                 _gameManager.OnPlayerDied();
                 m_Animator.CrossFadeInFixedTime("Fall Over", .1f);
                 _gameStarted = false;
@@ -416,7 +453,11 @@ public class PlayerController : MonoBehaviour
         float max_y = Mathf.Min(col_bounds.max.y, char_bounds.max.y);
         float average = ((min_y + max_y) / 2 - char_bounds.min.y) / char_bounds.size.y;
         HitY hit;
-        if (average < 0.33f)
+        if (average < 0.15f)
+        {
+            hit = HitY.Low;
+        }
+        else if (average < 0.33f)
         {
             hit = HitY.Down;
         }
@@ -439,11 +480,11 @@ public class PlayerController : MonoBehaviour
         float max_z = Mathf.Min(col_bounds.max.z, char_bounds.max.z);
         float average = ((min_z + max_z) / 2 - char_bounds.min.z) / char_bounds.size.z;
         HitZ hit;
-        if (average < 0.33f)
+        if (average < 0.2f)
         {
             hit = HitZ.Backward;
         }
-        else if (average < 0.66)
+        else if (average < 0.8)
         {
             hit = HitZ.Mid;
         }

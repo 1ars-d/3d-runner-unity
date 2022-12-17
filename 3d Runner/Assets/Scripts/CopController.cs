@@ -8,11 +8,27 @@ public class CopController : MonoBehaviour
     [SerializeField] private Vector3 _endRotation;
     [SerializeField] private float _moveTime;
 
+    private bool _isMoving;
+
+    GameObject _player;
+    PlayerController _playerController;
+
     Animator animator;
 
     private void Start()
     {
+        _isMoving = true;
+        _player = GameObject.FindGameObjectWithTag("Player");
+        _playerController = _player.GetComponent<PlayerController>();
         animator = GetComponent<Animator>();
+    }
+
+    private void Update()
+    {
+        if (!_isMoving)
+        {
+            transform.position = new Vector3(_player.transform.position.x, _player.transform.position.y, transform.position.z);
+        }
     }
 
     public void StartMoving()
@@ -21,8 +37,25 @@ public class CopController : MonoBehaviour
         StartCoroutine(MoveTowardsPlayer(_moveTime));
     }
 
-    IEnumerator MoveTowardsPlayer(float duration)
+    public IEnumerator MoveTowardsPlayerStumble(float duration)
     {
+        float timeElapsed = 0;
+        Vector3 startPos = transform.position;
+        float endPosZ = _player.transform.position.z - 1.8f;
+        while (timeElapsed < duration)
+        {
+            float t = timeElapsed / duration;
+            t = t * t * (3f - 2f * t);
+            transform.position = Vector3.Lerp(new Vector3(_player.transform.position.x, _player.transform.position.y, startPos.z), new Vector3(_player.transform.position.x, _player.transform.position.y, endPosZ), t);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        StartCoroutine(BackUp(2f));
+    }
+
+    private IEnumerator MoveTowardsPlayer(float duration)
+    {
+        _isMoving = true;
         float timeElapsed = 0;
         Vector3 startPos = transform.position;
         Quaternion startRot = transform.rotation;
@@ -35,21 +68,24 @@ public class CopController : MonoBehaviour
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        StartCoroutine(BackUp(1f));
+        _isMoving = false;
+        _playerController._gameStarted = true;
+        StartCoroutine(BackUp(2f));
     }
 
     IEnumerator BackUp(float duration)
     {
         float timeElapsed = 0;
         Vector3 startPos = transform.position;
-        Vector3 backUpPos = new Vector3(startPos.x, startPos.y, startPos.z - 2f);
+        Vector3 backUpPos = new Vector3(startPos.x, startPos.y, startPos.z - 2.5f);
         while (timeElapsed < duration)
         {
             float t = timeElapsed / duration;
             t = t * t * (3f - 2f * t);
-            transform.position = Vector3.Lerp(startPos, backUpPos, t);
+            transform.position = Vector3.Lerp(new Vector3(transform.position.x, transform.position.y, startPos.z), new Vector3(transform.position.x, transform.position.y, backUpPos.z), t);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
+        this.gameObject.SetActive(false);
     }
 }

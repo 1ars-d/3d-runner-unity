@@ -9,6 +9,7 @@ TagManager:
   - MoveableObstacle
   - Slope
   - Cop
+  - GroundTile
   layers:
   - Default
   - TransparentFX
