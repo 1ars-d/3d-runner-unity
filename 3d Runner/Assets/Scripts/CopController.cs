@@ -86,6 +86,5 @@ public class CopController : MonoBehaviour
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        this.gameObject.SetActive(false);
-    }
+     }
 }

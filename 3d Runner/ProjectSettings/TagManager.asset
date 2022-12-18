@@ -10,6 +10,7 @@ TagManager:
   - Slope
   - Cop
   - GroundTile
+  - InstantDeath
   layers:
   - Default
   - TransparentFX

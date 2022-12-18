@@ -8,6 +8,16 @@ public class OnCollision : MonoBehaviour
     [SerializeField] private PlayerController m_char;
     private bool _isColliding;
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.tag == "InstantDeath")
+        {
+            m_char.OnInstantDeatHit();
+            StartCoroutine(ResetColiding());
+            return;
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (_isColliding || collision.transform.tag == "Player" || collision.transform.tag == "GroundTile")
@@ -18,6 +28,7 @@ public class OnCollision : MonoBehaviour
         if (collision.transform.tag == "MoveableObstacle")
         {
             m_char.OnMoveableObstacleHit();
+            StartCoroutine(ResetColiding());
             return;
         }
         m_char.OnCharacterCollideHit(collision.collider);

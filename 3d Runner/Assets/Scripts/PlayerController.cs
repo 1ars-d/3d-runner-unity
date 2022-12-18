@@ -318,9 +318,7 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(_camController.Shake(0.1f, 0.07f));
         if (_stumbleTimer > 0)
         {
-            m_Animator.CrossFadeInFixedTime("Fall Over", .1f);
-            _gameManager.OnPlayerDied();
-            _gameStarted = false;
+            PlayerDie();
             return;
         }
         _nextStumbleDelay = .1f;
@@ -330,6 +328,25 @@ public class PlayerController : MonoBehaviour
         _hitStars.SetActive(true);
         _starsAnimator.Play("stars_rotate");
         _stumbleTimer = _stumbleTime;
+    }
+
+    IEnumerator PlayDieAnimation(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        m_Animator.Play("Fall Over");
+    }
+
+    private void PlayerDie()
+    {
+        StartCoroutine(PlayDieAnimation(.001f));
+        _gameManager.OnPlayerDied();
+        _gameStarted = false;
+    }
+
+    public void OnInstantDeatHit()
+    {
+        StartCoroutine(_camController.Shake(0.1f, 0.07f));
+        PlayerDie();
     }
 
     public void OnMoveableObstacleHit()
@@ -406,9 +423,7 @@ public class PlayerController : MonoBehaviour
         if (_hitZ == HitZ.Forward && _hitX == HitX.Mid) // Death
         {
             StartCoroutine(_camController.Shake(0.1f, 0.05f));
-            _gameManager.OnPlayerDied();
-            m_Animator.CrossFadeInFixedTime("Fall Over", .1f);
-            _gameStarted = false;
+            PlayerDie();
         }
         else if (_hitZ == HitZ.Mid)
         {
@@ -422,9 +437,7 @@ public class PlayerController : MonoBehaviour
             if (_hitX == HitX.Right || _hitX == HitX.Left)
             {
                 StartCoroutine(_camController.Shake(0.1f, 0.05f));
-                _gameManager.OnPlayerDied();
-                m_Animator.CrossFadeInFixedTime("Fall Over", .1f);
-                _gameStarted = false;
+                PlayerDie();
             }
         }
         ResetCollisions();
