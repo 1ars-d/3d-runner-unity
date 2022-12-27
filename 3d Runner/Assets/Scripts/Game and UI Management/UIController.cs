@@ -14,6 +14,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _coinsText;
     [SerializeField] private RectTransform _coinImage;
     [SerializeField] private Image _deathTimer;
+    [SerializeField] private Image _energyBar;
 
     [Header("Powerup UI")]
     [SerializeField] private GameObject _magnetTimeline;
@@ -36,6 +37,11 @@ public class UIController : MonoBehaviour
     void Update()
     {
         HandleCoinImageAnimation();
+    }
+
+    public void SetEnergyBarValue(float value)
+    {
+        _energyBar.fillAmount = value;
     }
 
     public void SetMagnetBarFill(float value)

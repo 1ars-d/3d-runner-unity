@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
 
     private float _yPos;
     private float _newXPos = 0f;
-    private CharacterController m_char;
+    public CharacterController m_char;
     private float _xPos;
     private float _colHeight;
     private float _colCenterY;
@@ -360,6 +360,19 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         m_Animator.Play("Fall Over");
+    }
+
+    IEnumerator PlayFallOverAnimation(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        m_Animator.Play("FallFlat");
+    }
+
+    public void OnEnergyDead()
+    {
+        StartCoroutine(PlayFallOverAnimation(.001f));
+        _gameManager.OnPlayerDied();
+        _gameStarted = false;
     }
 
     private void PlayerDie()

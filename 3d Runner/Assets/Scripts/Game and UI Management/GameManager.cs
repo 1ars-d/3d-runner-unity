@@ -30,10 +30,16 @@ public class GameManager : MonoBehaviour
     [Header("Score Management")]
     [SerializeField] private float _scoreIncrease = 0.0003f;
     [SerializeField] private float _scoreMultiplier = 0.005f;
+    [SerializeField] private float _energyDecrease = 0.005f;
     [HideInInspector] public float gameScore;
     [HideInInspector] public int coins;
+    [HideInInspector] public float EnergyLevel;
+    public int EnergyItemRate;
+    [HideInInspector] public int EnergyItemCount;
+    private bool _lerpingEnergyLevel;
 
     private float _currentDeathTime;
+
 
     // Managers
     private UIController _UIController;
@@ -42,6 +48,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        EnergyItemCount = EnergyItemRate;
+        EnergyLevel = 1f;
         PlayerDied = false;
         _currentDeathTime = _deathTime;
         _UIController = GetComponent<UIController>();
@@ -58,12 +66,49 @@ public class GameManager : MonoBehaviour
             HandleGameScore();
         }
         DeathTimerHandler();
+        EnergyLevelHandler();
     }
 
+    private IEnumerator EnergyLerp(float addValue, float duration)
+    {
+        float timeElapsed = 0;
+        _lerpingEnergyLevel = true;
+        float origValue = EnergyLevel;
+        float aimValue = Mathf.Clamp(addValue + EnergyLevel, 0, 1);
+        while (timeElapsed < duration)
+        {
+            float t = timeElapsed / duration;
+            t = t * t * (3f - 2f * t);
+            EnergyLevel = Mathf.Lerp(origValue, aimValue, t);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        EnergyLevel = aimValue;
+        _lerpingEnergyLevel = false;
+    }
+
+    private void EnergyLevelHandler()
+    {
+        if (IsRunning && !_lerpingEnergyLevel && EnergyLevel > 0)
+        {
+            EnergyLevel -= _energyDecrease;
+        }
+        if (IsRunning && _playerController.m_char.isGrounded && EnergyLevel <= 0)
+        {
+            _playerController.OnEnergyDead();
+        }
+        _UIController.SetEnergyBarValue(EnergyLevel);
+    }
 
     public void ActivateMagnet()
     {
         _PUManager.ActivateMagnet();
+    }
+
+    public void OnEnergyCollect(float energyValue)
+    {
+        _PUManager.ItemCollectEffects();
+        StartCoroutine(EnergyLerp(energyValue, 0.15f));
     }
 
     public void AddCoin()

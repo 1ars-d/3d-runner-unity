@@ -32,9 +32,14 @@ public class PowerUpManager : MonoBehaviour
         _magnetTimer = _magnetDuration;
         _rightArmMagnet.SetActive(true);
         _UIController.SetMagnetTimeLineState(true);
+        ItemCollectEffects();
+    }
+
+    public void ItemCollectEffects()
+    {
+        _playerEffects.PlayerGlowUp();
         _UIController.SetLinesEffectState(true);
         _UIController.DisableLinesEffect();
-        _playerEffects.PlayerGlowUp();
     }
 
     private void HandlePowerUps()
