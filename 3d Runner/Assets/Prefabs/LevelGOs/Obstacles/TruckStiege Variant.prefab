@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8121428159326624971}
   - component: {fileID: 2797262888562177991}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: collider
   m_TagString: Slope
   m_Icon: {fileID: 0}
@@ -43,8 +43,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.4377732, y: 1.2603148, z: 8.000294}
-  m_Center: {x: 0.5761497, y: 1.6551832, z: -4.468992}
+  m_Size: {x: 2.4377732, y: 1.2603147, z: 8.05636}
+  m_Center: {x: 0.5761497, y: 1.6551888, z: -4.440959}
 --- !u!1001 &8782974660303670108
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -153,8 +153,16 @@ PrefabInstance:
       value: TruckStiege Variant
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b00e67634c18b424d897194004023851, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b00e67634c18b424d897194004023851, type: 3}
       propertyPath: m_TagString
       value: Slope
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: b00e67634c18b424d897194004023851, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8164078558771037576, guid: b00e67634c18b424d897194004023851, type: 3}
       propertyPath: m_TagString
@@ -167,6 +175,19 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b00e67634c18b424d897194004023851, type: 3}
   m_PrefabInstance: {fileID: 8782974660303670108}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &1399210777898723182
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8440323197603509773}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.4555688, y: 2.2046194, z: 0.7464514}
+  m_Center: {x: 0.58403206, y: 0.6023098, z: -1.3450646}
 --- !u!65 &6043722897894699978
 BoxCollider:
   m_ObjectHideFlags: 0

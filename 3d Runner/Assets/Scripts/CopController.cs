@@ -7,10 +7,10 @@ public class CopController : MonoBehaviour
     [SerializeField] private Vector3 _endPos;
     [SerializeField] private Vector3 _endRotation;
     [SerializeField] private float _moveTime;
+    [SerializeField] private PlayerController _player;
 
     private bool _isMoving;
 
-    GameObject _player;
     PlayerController _playerController;
 
     Animator animator;
@@ -18,7 +18,6 @@ public class CopController : MonoBehaviour
     private void Start()
     {
         _isMoving = true;
-        _player = GameObject.FindGameObjectWithTag("Player");
         _playerController = _player.GetComponent<PlayerController>();
         animator = GetComponent<Animator>();
     }
@@ -77,7 +76,7 @@ public class CopController : MonoBehaviour
     {
         float timeElapsed = 0;
         Vector3 startPos = transform.position;
-        Vector3 backUpPos = new Vector3(startPos.x, startPos.y, startPos.z - 2.5f);
+        Vector3 backUpPos = new Vector3(startPos.x, startPos.y, startPos.z - 3f);
         while (timeElapsed < duration)
         {
             float t = timeElapsed / duration;

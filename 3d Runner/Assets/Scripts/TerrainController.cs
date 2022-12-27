@@ -14,21 +14,18 @@ public class TerrainController : MonoBehaviour
     [SerializeField] private float _terrainSpeed = 7f;
     [SerializeField] private float _accelrationDuration = 1f;
     [SerializeField] private bool _accelerate = true;
+    [SerializeField] private float _accelerationIncrease;
     [SerializeField] private float _slopeIncrease = 2f;
     private float _currentSlopeIncrease;
     private float _currentSpeed;
 
     private float _elapsedTime;
 
-    GameManager gameManager;
-    PlayerController playerController;
+    [Header("Scripts")]
+    [SerializeField] private GameManager gameManager;
+    [SerializeField] private PlayerController playerController;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-    }
 
     // Update is called once per frame
     void Update()
@@ -46,7 +43,7 @@ public class TerrainController : MonoBehaviour
     {
         if (_accelerate)
         {
-            _currentSpeed += .0003f;
+            _currentSpeed += _accelerationIncrease;
         }
     }
 

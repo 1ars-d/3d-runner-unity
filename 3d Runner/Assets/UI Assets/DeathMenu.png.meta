@@ -220,6 +220,90 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: DeathMenu_5
+      rect:
+        serializedVersion: 2
+        x: 883
+        y: 201
+        width: 106
+        height: 548
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 549d121260be26e4e9916fc7dc23c862
+      internalID: 2067442124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeathMenu_6
+      rect:
+        serializedVersion: 2
+        x: 732
+        y: 77
+        width: 119
+        height: 115
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 138ae59d519dc1d4e9aecfff814445c5
+      internalID: -1984206778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeathMenu_7
+      rect:
+        serializedVersion: 2
+        x: 793
+        y: 222
+        width: 66
+        height: 513
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ae55f9b6e7a4a94389695b4c726acf7
+      internalID: 1339442346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeathMenu_8
+      rect:
+        serializedVersion: 2
+        x: 862
+        y: 2
+        width: 137
+        height: 139
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 07c2556e3fcf1aa49bc000f953040d49
+      internalID: -834750989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -233,9 +317,13 @@ TextureImporter:
     nameFileIdTable:
       DeathMenu_1: -691826681
       DeathMenu_0: -45992650
+      DeathMenu_7: 1339442346
+      DeathMenu_8: -834750989
+      DeathMenu_5: 2067442124
       DeathMenu_2: -1458933146
       DeathMenu_3: 341983275
       DeathMenu_4: 1990547867
+      DeathMenu_6: -1984206778
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
