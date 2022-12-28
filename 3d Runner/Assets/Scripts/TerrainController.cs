@@ -18,6 +18,7 @@ public class TerrainController : MonoBehaviour
     [SerializeField] private float _slopeIncrease = 2f;
     private float _currentSlopeIncrease;
     private float _currentSpeed;
+    private bool _lastOnSlope;
 
     private float _elapsedTime;
 
@@ -26,25 +27,51 @@ public class TerrainController : MonoBehaviour
     [SerializeField] private PlayerController playerController;
 
     // Start is called before the first frame update
+    private void Start()
+    {
+        _lastOnSlope = false;
+    }
 
     // Update is called once per frame
     void Update()
     {
         if (!gameManager.IsRunning) return;
-        if (playerController.CheckOnSlope())
-            _currentSlopeIncrease = _slopeIncrease;
-        else
-            _currentSlopeIncrease = 0;
+        SlopeCheck();
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - (_currentSpeed + _currentSlopeIncrease) * Time.deltaTime);
         SpawnTiles();
     }
-
     private void FixedUpdate()
     {
         if (_accelerate)
         {
             _currentSpeed += _accelerationIncrease;
         }
+    }
+
+    private void SlopeCheck()
+    {
+        bool currentOnSlope = playerController.CheckOnSlope();
+        if (!_lastOnSlope && currentOnSlope)
+            StartCoroutine(TransitionSlopeIncrease(_slopeIncrease, 0.4f));
+        else if (_lastOnSlope && !currentOnSlope)
+            StartCoroutine(TransitionSlopeIncrease(0, 0.4f));
+        _lastOnSlope = currentOnSlope;
+    }
+
+
+    private IEnumerator TransitionSlopeIncrease(float newIncrease, float duration)
+    {
+        float timeElapsed = 0;
+        float startIncrease = _currentSlopeIncrease;
+        while (timeElapsed < duration && gameManager.IsRunning)
+        {
+            float t = timeElapsed / duration;
+            t = t * t * (3f - 2f * t);
+            _currentSlopeIncrease = Mathf.Lerp(startIncrease, newIncrease, t);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        _currentSlopeIncrease = newIncrease;
     }
 
     public void StartMoving()

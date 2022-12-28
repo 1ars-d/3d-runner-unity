@@ -96,6 +96,7 @@ public class GameManager : MonoBehaviour
         if (IsRunning && _playerController.m_char.isGrounded && EnergyLevel <= 0)
         {
             _playerController.OnEnergyDead();
+            StartCoroutine(_UIController.TransitionVignette(0.5f, 1.5f));
         }
         _UIController.SetEnergyBarValue(EnergyLevel);
     }

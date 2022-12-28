@@ -30,6 +30,7 @@ public class CopController : MonoBehaviour
         }
     }
 
+
     public void StartMoving()
     {
         animator.Play("StartRunning");

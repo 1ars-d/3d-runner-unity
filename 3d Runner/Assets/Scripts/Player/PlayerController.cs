@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public bool _inRoll;
     [SerializeField] private bool _isFalling;
     [SerializeField] private float _yMult = .8f;
+    [SerializeField] private float _jumpAfterTime = .5f;
     [HideInInspector] public bool IsOnSlope;
     private bool _jumpOnLand;
 
@@ -53,6 +54,9 @@ public class PlayerController : MonoBehaviour
     private float _nextStumbleDelay;
 
     public bool _onSlope;
+    private bool _canJump;
+    private bool _lastTouchingGround;
+    private float _jumpTimer;
 
     [Header("Script and GameObject Refs")]
     [SerializeField] private CameraController _camController;
@@ -107,6 +111,7 @@ public class PlayerController : MonoBehaviour
         HandleJump();
         HandleRoll();
         HandleStumble();
+        HandleJumpTimer();
     }
 
     public void StartRunning()
@@ -132,6 +137,7 @@ public class PlayerController : MonoBehaviour
     public void GoLeft()
     {
         if (!_gameStarted) return;
+        _jumpOnLand = false;
         if (m_side == SIDE.Mid)
         {
             _newXPos = -_xWidth;
@@ -177,6 +183,7 @@ public class PlayerController : MonoBehaviour
     public void GoRight()
     {
         if (!_gameStarted) return;
+        _jumpOnLand = false;
         if (m_side == SIDE.Mid)
         {
             _newXPos = _xWidth;
@@ -207,6 +214,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void HandleJumpTimer()
+    {
+        if (_lastTouchingGround && !m_char.isGrounded && !_inJump)
+        {
+            _jumpTimer = _jumpAfterTime;
+        }
+        _jumpTimer -= Time.deltaTime;
+        _lastTouchingGround = m_char.isGrounded;
+        _canJump = m_char.isGrounded || _jumpTimer > 0;
+    }
+
     private void HandleJump()
     {
         if (m_char.isGrounded)
@@ -215,6 +233,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (_jumpOnLand && !_inRoll)
                 {
+                    _canJump = true;
                     Jump();
                     _jumpOnLand = false;
                     return;
@@ -244,7 +263,7 @@ public class PlayerController : MonoBehaviour
     public void Jump()
     {
         if (!_gameStarted) return;
-        if (m_char.isGrounded)
+        if (_canJump)
         {
             _yPos = _jumpPower;
             if (Random.Range(0, 2) == 0)
@@ -257,7 +276,7 @@ public class PlayerController : MonoBehaviour
 
             _inJump = true;
             _isFalling = false;
-        } else
+        } else if (_isFalling)
         {
             _jumpOnLand = true;
         }
@@ -461,6 +480,7 @@ public class PlayerController : MonoBehaviour
         if (_hitY == HitY.Low && _hitX == HitX.Mid) return;
         if (_hitZ == HitZ.Forward && _hitX == HitX.Mid) // Death
         {
+            if (_inRoll && CheckOnSlope()) return;
             StartCoroutine(_camController.Shake(0.1f, 0.05f));
             PlayerDie();
         }
