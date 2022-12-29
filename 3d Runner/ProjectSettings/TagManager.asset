@@ -11,6 +11,7 @@ TagManager:
   - Cop
   - GroundTile
   - InstantDeath
+  - InstantWaterDeath
   layers:
   - Default
   - TransparentFX

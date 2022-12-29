@@ -16,6 +16,12 @@ public class OnCollision : MonoBehaviour
             StartCoroutine(ResetColiding());
             return;
         }
+        else if (other.transform.tag == "InstantWaterDeath")
+        {
+            m_char.OnInstantWaterDeatHit();
+            StartCoroutine(ResetColiding());
+            return;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)

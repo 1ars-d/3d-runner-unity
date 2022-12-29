@@ -131,7 +131,7 @@ public class GameManager : MonoBehaviour
             RestartGame();
         }
         _currentDeathTime -= Time.deltaTime;
-        _UIController.SetDeathTimer(_currentDeathTime / _deathTime);
+        _UIController.SetDeathTimer(_currentDeathTime / _deathTime, _currentDeathTime);
     }
 
     private void HandleGameScore()
@@ -164,6 +164,8 @@ public class GameManager : MonoBehaviour
     {
         PlayerDied = true;
         IsRunning = false;
+        _copController.gameObject.SetActive(true);
+        StartCoroutine(_copController.MoveTowardsPlayerDeath(1f));
         _UIController.SetDeathMenu(true);
         _terrainController.StopMoving();
         _currentDeathTime = _deathTime;

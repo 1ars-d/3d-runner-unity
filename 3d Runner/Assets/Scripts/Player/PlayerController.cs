@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour
     private bool _canJump;
     private bool _lastTouchingGround;
     private float _jumpTimer;
+    private bool _fallingWater;
 
     [Header("Script and GameObject Refs")]
     [SerializeField] private CameraController _camController;
@@ -88,6 +89,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (_fallingWater)
+        {
+            Vector3 move = new Vector3(_xPos - transform.position.x, _yPos * _yMult * 3 * Time.deltaTime, 0);
+            m_char.Move(move);
+        }
         if (!_gameStarted)
         {
             return;
@@ -351,7 +357,6 @@ public class PlayerController : MonoBehaviour
         }
         if (_stumbling && _stumbleTimer <= 0)
         {
-            _cop.SetActive(false);
             _stumbling = false;
             _starsAnimator.CrossFadeInFixedTime("fade_away", .1f);
         }
@@ -359,7 +364,7 @@ public class PlayerController : MonoBehaviour
 
     private void StumbleHit()
     {
-        if (_nextStumbleDelay > 0) return;
+        if (_nextStumbleDelay > 0 || !_gameManager.IsRunning) return;
         StartCoroutine(_camController.Shake(0.1f, 0.07f));
         if (_stumbleTimer > 0)
         {
@@ -368,7 +373,6 @@ public class PlayerController : MonoBehaviour
         }
         _nextStumbleDelay = .1f;
         _stumbling = true;
-        _cop.SetActive(true);
         StartCoroutine(_copController.MoveTowardsPlayerStumble(1.5f));
         _hitStars.SetActive(true);
         _starsAnimator.Play("stars_rotate");
@@ -405,6 +409,13 @@ public class PlayerController : MonoBehaviour
     {
         StartCoroutine(_camController.Shake(0.1f, 0.07f));
         PlayerDie();
+    }
+
+    public void OnInstantWaterDeatHit()
+    {
+        _fallingWater = true;
+        _gameManager.OnPlayerDied();
+        _gameStarted = false;
     }
 
     public void OnMoveableObstacleHit()

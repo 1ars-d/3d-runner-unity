@@ -119,10 +119,10 @@ TextureImporter:
       name: DeathMenu_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 771
-        width: 270
-        height: 211
+        x: 26
+        y: 780
+        width: 203
+        height: 198
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -146,7 +146,7 @@ TextureImporter:
         height: 455
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 56, y: 50, z: 94, w: 58}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -161,13 +161,13 @@ TextureImporter:
       name: DeathMenu_2
       rect:
         serializedVersion: 2
-        x: 5
-        y: 13
-        width: 585
-        height: 256
+        x: 76
+        y: 19
+        width: 491
+        height: 202
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 100, y: 0, z: 95, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -182,10 +182,10 @@ TextureImporter:
       name: DeathMenu_3
       rect:
         serializedVersion: 2
-        x: 292
-        y: 779
-        width: 188
-        height: 199
+        x: 263
+        y: 754
+        width: 243
+        height: 246
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 4}
@@ -203,8 +203,8 @@ TextureImporter:
       name: DeathMenu_4
       rect:
         serializedVersion: 2
-        x: 682
-        y: 795
+        x: 793
+        y: 831
         width: 164
         height: 166
       alignment: 0
@@ -292,7 +292,7 @@ TextureImporter:
         width: 137
         height: 139
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -300,6 +300,27 @@ TextureImporter:
       bones: []
       spriteID: 07c2556e3fcf1aa49bc000f953040d49
       internalID: -834750989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DeathMenu_9
+      rect:
+        serializedVersion: 2
+        x: 521
+        y: 751
+        width: 261
+        height: 244
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91f350b9f57f7c142897596bae19e2a6
+      internalID: -1476033286
       vertices: []
       indices: 
       edges: []
@@ -324,6 +345,7 @@ TextureImporter:
       DeathMenu_3: 341983275
       DeathMenu_4: 1990547867
       DeathMenu_6: -1984206778
+      DeathMenu_9: -77563573
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

@@ -15,6 +15,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _coinsText;
     [SerializeField] private RectTransform _coinImage;
     [SerializeField] private Image _deathTimer;
+    [SerializeField] private TextMeshProUGUI _deathTimerText;
     [SerializeField] private Image _energyBar;
     [SerializeField] private Image _energySymbol;
 
@@ -112,6 +113,12 @@ public class UIController : MonoBehaviour
 
     public void SetDeathMenu(bool state)
     {
+        StartCoroutine(SetDeathMenuRoutine(state));
+    }
+
+    private IEnumerator SetDeathMenuRoutine(bool state)
+    {
+        yield return new WaitForSeconds(.15f);
         _deathMenu.SetActive(state);
     }
 
@@ -135,10 +142,12 @@ public class UIController : MonoBehaviour
         _currentCoinSize = _largeCoinSize;
     }
 
-    public void SetDeathTimer(float value)
+    public void SetDeathTimer(float value, float absoluteTime)
     {
         _deathTimer.fillAmount = value;
+        _deathTimerText.SetText(Mathf.CeilToInt(absoluteTime).ToString());
     }
+
 
     private void HandleCoinImageAnimation()
     {
