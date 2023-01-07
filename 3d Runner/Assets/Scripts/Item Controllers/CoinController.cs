@@ -44,7 +44,33 @@ public class CoinController : MonoBehaviour
             _movingToPlayer = true;
             _animator.enabled = false;
             StartCoroutine(MoveToPlayer());
+            StartCoroutine(LookAtPlayer(2f));
         }
+    }
+
+    private static float WrapAngle(float angle)
+    {
+        angle %= 360;
+        if (angle > 180)
+            return angle - 360;
+
+        return angle;
+    }
+
+    private IEnumerator LookAtPlayer(float duration)
+    {
+        float timeElapsed = 0;
+        Vector3 lookPos = _player.transform.position - transform.position;
+        Quaternion rotation = Quaternion.LookRotation(lookPos);
+        while (timeElapsed < duration)
+        {
+            float t = timeElapsed / duration;
+            t = t * t * (3f - 2f * t);
+            transform.rotation = Quaternion.Euler(Vector3.Lerp(new Vector3(WrapAngle(transform.eulerAngles.x), WrapAngle(transform.eulerAngles.y), WrapAngle(transform.eulerAngles.z)), new Vector3(0, rotation.y + 90, 0), t));
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        transform.rotation = Quaternion.Euler(new Vector3(0, rotation.y - 90, 0));
     }
 
     private IEnumerator MoveToPlayer()

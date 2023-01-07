@@ -132,6 +132,7 @@ public class TerrainController : MonoBehaviour
         _elapsedTime += Time.deltaTime;
         if (_elapsedTime >= 0.5 && ActiveChunks.Count < _maxLoadedChunks)
         {
+            Random.seed = System.DateTime.Now.Millisecond;
             List<GameObject> _chunksList = new List<GameObject>();
             if (_currentTerrain == TERRAIN.CITY)
                 _chunksList = _cityChunksList;

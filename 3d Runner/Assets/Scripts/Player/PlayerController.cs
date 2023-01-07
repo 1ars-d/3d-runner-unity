@@ -503,7 +503,7 @@ public class PlayerController : MonoBehaviour
         _hitZ = GetHitZ(col);
 
         if (_hitY == HitY.Low && _hitX == HitX.Mid) return;
-        if (_hitZ == HitZ.Forward && _hitX == HitX.Mid || _hitZ == HitZ.Mid && _hitX == HitX.Mid && !CheckOnSlope()) // Death
+        if (_hitZ == HitZ.Forward && _hitX == HitX.Mid || _hitZ == HitZ.Mid && _hitX == HitX.Mid && !CheckOnSlope() && col.gameObject.tag != "Slope") // Death
         {
             if (_inRoll && CheckOnSlope()) return;
             StartCoroutine(_camController.Shake(0.1f, 0.05f));
