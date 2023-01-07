@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool _isFalling;
     [SerializeField] private float _yMult = .8f;
     [SerializeField] private float _jumpAfterTime = .5f;
+    [SerializeField] private float _slopeJumpMultiplier = 1.5f;
     [HideInInspector] public bool IsOnSlope;
     private bool _jumpOnLand;
 
@@ -246,7 +247,14 @@ public class PlayerController : MonoBehaviour
                 }
                 if (/*m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Falling") && */!_inRoll)
                 {
-                    m_Animator.CrossFadeInFixedTime("Running", 0.15f);
+                    if (CheckOnSlope())
+                    {
+                        m_Animator.CrossFadeInFixedTime("Running", 0.05f);
+                    }
+                    else
+                    {
+                        m_Animator.CrossFadeInFixedTime("Running", 0.15f);
+                    }
                 }
                 _isFalling = false;
                 _inJump = false;
@@ -270,8 +278,14 @@ public class PlayerController : MonoBehaviour
     {
         if (!_gameStarted) return;
         if (_canJump)
-        {
-            _yPos = _jumpPower;
+        {   
+            if (CheckOnSlope())
+            {
+                _yPos = _jumpPower * _slopeJumpMultiplier;
+            } else
+            {
+                _yPos = _jumpPower;
+            }
             if (Random.Range(0, 2) == 0)
             {
                 m_Animator.CrossFadeInFixedTime("Jump", 0.1f);
@@ -489,7 +503,7 @@ public class PlayerController : MonoBehaviour
         _hitZ = GetHitZ(col);
 
         if (_hitY == HitY.Low && _hitX == HitX.Mid) return;
-        if (_hitZ == HitZ.Forward && _hitX == HitX.Mid) // Death
+        if (_hitZ == HitZ.Forward && _hitX == HitX.Mid || _hitZ == HitZ.Mid && _hitX == HitX.Mid && !CheckOnSlope()) // Death
         {
             if (_inRoll && CheckOnSlope()) return;
             StartCoroutine(_camController.Shake(0.1f, 0.05f));
@@ -499,6 +513,7 @@ public class PlayerController : MonoBehaviour
         {
             if (_hitX == HitX.Right || _hitX == HitX.Left)
             {
+                //StartCoroutine(_camController.Shake(0.1f, 0.05f));
                 HitSide();
             }
         }
@@ -506,7 +521,7 @@ public class PlayerController : MonoBehaviour
         {
             if (_hitX == HitX.Right || _hitX == HitX.Left)
             {
-                StartCoroutine(_camController.Shake(0.1f, 0.05f));
+                //StartCoroutine(_camController.Shake(0.1f, 0.05f));
                 PlayerDie();
             }
         }

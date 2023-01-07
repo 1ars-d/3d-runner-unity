@@ -78,8 +78,8 @@ public class CopController : MonoBehaviour
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        StartCoroutine(BackUp(4f));
         _isMoving = false;
+        StartCoroutine(BackUp(4f));
     }
 
     private IEnumerator MoveTowardsPlayer(float duration)
@@ -110,7 +110,7 @@ public class CopController : MonoBehaviour
         while (timeElapsed < duration && _gameManager.IsRunning && !_isMoving)
         {
             float t = timeElapsed / duration;
-            t = t * t * (3f - 2f * t);
+            t = Mathf.Sin(t * Mathf.PI * 0.5f);
             transform.position = Vector3.Lerp(new Vector3(transform.position.x, transform.position.y, startPos.z), new Vector3(transform.position.x, transform.position.y, backUpPos.z), t);
             timeElapsed += Time.deltaTime;
             yield return null;

@@ -6,7 +6,7 @@ public class ChunkController : MonoBehaviour
 {
     void Update()
     {
-        if (transform.position.z < -80f)
+        if (transform.position.z < -60f)
         {
             gameObject.GetComponentInParent<TerrainController>().ActiveChunks.Remove(gameObject);
             Destroy(gameObject);

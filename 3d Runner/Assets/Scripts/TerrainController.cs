@@ -2,13 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public enum TERRAIN { CITY, BRIDGE }
+
 public class TerrainController : MonoBehaviour
 {
     [Header("Chunks")]
     [SerializeField] private int _maxLoadedChunks = 5;
     [SerializeField] private float _chunkLength;
-    [SerializeField] private List<GameObject> _chunksList;
+    [SerializeField] private List<GameObject> _cityChunksList;
+    [SerializeField] private List<GameObject> _bridgeChunksList;
+    [SerializeField] private GameObject _cityToBridge;
+    [SerializeField] private GameObject _bridgeToCity;
     [SerializeField] public List<GameObject> ActiveChunks;
+    [SerializeField] private int _terrainCountRangeMin = 5;
+    [SerializeField] private int _terrainCountRangeMax = 10;
 
     [Header("Chunk Speed")]
     [SerializeField] private float _terrainSpeed = 7f;
@@ -20,6 +28,9 @@ public class TerrainController : MonoBehaviour
     private float _currentSpeed;
     private bool _lastOnSlope;
 
+    private TERRAIN _currentTerrain;
+    [SerializeField] private int _changeTerrainCount;
+
     private float _elapsedTime;
 
     [Header("Scripts")]
@@ -30,6 +41,8 @@ public class TerrainController : MonoBehaviour
     private void Start()
     {
         _lastOnSlope = false;
+        _currentTerrain = TERRAIN.CITY;
+        _changeTerrainCount = Random.Range(_terrainCountRangeMin, _terrainCountRangeMax);
     }
 
     // Update is called once per frame
@@ -97,14 +110,41 @@ public class TerrainController : MonoBehaviour
         }
     }
 
+    private void ChangeTerrain()
+    {
+        if (_currentTerrain == TERRAIN.CITY)
+        {
+            GameObject newGO = Instantiate(_cityToBridge, new Vector3(ActiveChunks[0].transform.position.x, ActiveChunks[0].transform.position.y, ActiveChunks[0].transform.position.z + _chunkLength), Quaternion.identity, transform);
+            ActiveChunks.Insert(0, newGO);
+            _currentTerrain = TERRAIN.BRIDGE;
+        }
+        else if (_currentTerrain == TERRAIN.BRIDGE)
+        {
+            GameObject newGO = Instantiate(_bridgeToCity, new Vector3(ActiveChunks[0].transform.position.x, ActiveChunks[0].transform.position.y, ActiveChunks[0].transform.position.z + _chunkLength), Quaternion.identity, transform);
+            ActiveChunks.Insert(0, newGO);
+            _currentTerrain = TERRAIN.CITY;
+        }
+        _changeTerrainCount = Random.Range(_terrainCountRangeMin, _terrainCountRangeMax);
+    }
+
     private void SpawnTiles()
     {
         _elapsedTime += Time.deltaTime;
         if (_elapsedTime >= 0.5 && ActiveChunks.Count < _maxLoadedChunks)
         {
+            List<GameObject> _chunksList = new List<GameObject>();
+            if (_currentTerrain == TERRAIN.CITY)
+                _chunksList = _cityChunksList;
+            if (_currentTerrain == TERRAIN.BRIDGE)
+                _chunksList = _bridgeChunksList;
             GameObject newGO = Instantiate(_chunksList[Random.Range(0, _chunksList.Count)], new Vector3(ActiveChunks[0].transform.position.x, ActiveChunks[0].transform.position.y, ActiveChunks[0].transform.position.z + _chunkLength), Quaternion.identity, transform);
             ActiveChunks.Insert(0, newGO);
             _elapsedTime = 0;
+            _changeTerrainCount -= 1;
+            if (_changeTerrainCount <= 0)
+            {
+                ChangeTerrain();
+            }
         }
     }
 }

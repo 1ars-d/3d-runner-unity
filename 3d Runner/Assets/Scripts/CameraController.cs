@@ -86,6 +86,20 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    public IEnumerator EaseDistanceOnDeath(float distance, float duration)
+    {
+        float timeElapsed = 0;
+        float _prevZOffset = transposer.m_FollowOffset.z;
+        float _newZOffset = transposer.m_FollowOffset.z + distance;
+        while (timeElapsed < duration)
+        {
+            float t = timeElapsed / duration;
+            transposer.m_FollowOffset = Vector3.Lerp(new Vector3(transposer.m_FollowOffset.x, transposer.m_FollowOffset.y, _prevZOffset), new Vector3(transposer.m_FollowOffset.x, transposer.m_FollowOffset.y, _newZOffset), t);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
     private IEnumerator SetStartPosition(float duration)
     {
         yield return new WaitForSeconds(_panDelay);
@@ -118,7 +132,6 @@ public class CameraController : MonoBehaviour
     {
         Vector3 originalOffset = transposer.m_FollowOffset;
         float elapsed = 0.0f;
-
         while (elapsed < duration)
         {
             float x = Random.Range(-1f, 1f) * magnitude;
