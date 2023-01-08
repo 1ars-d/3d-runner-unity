@@ -10538,9 +10538,8 @@ MonoBehaviour:
   _maxLoadedChunks: 3
   _chunkLength: 49.5
   _cityChunksList:
-  - {fileID: 4181881787378938510, guid: 3a79b80caf1b1e5478adf0fda293e4d3, type: 3}
   - {fileID: 4181881787378938510, guid: 9896a5a4c6a745a4c87dd08ef1474004, type: 3}
-  - {fileID: 4181881787378938510, guid: 9896a5a4c6a745a4c87dd08ef1474004, type: 3}
+  - {fileID: 4181881787378938510, guid: 967f3bd8396366e409f3b88532fbdf84, type: 3}
   - {fileID: 4181881787378938510, guid: 3a79b80caf1b1e5478adf0fda293e4d3, type: 3}
   _bridgeChunksList:
   - {fileID: 4181881787378938510, guid: 5a351ca3939536a4e9c996df052f77ad, type: 3}
@@ -10552,8 +10551,8 @@ MonoBehaviour:
   _bridgeToCity: {fileID: 6079379956922762857, guid: 929a53accc52b624c9c1f00616437c34, type: 3}
   ActiveChunks:
   - {fileID: 4181881787696273162}
-  _terrainCountRangeMin: 2
-  _terrainCountRangeMax: 5
+  _terrainCountRangeMin: 4
+  _terrainCountRangeMax: 8
   _terrainSpeed: 11
   _accelrationDuration: 1
   _accelerate: 1
@@ -18658,6 +18657,10 @@ PrefabInstance:
     - target: {fileID: 7542643386080267367, guid: dc417cfc337d8ca438bc8556aaec9cb2, type: 3}
       propertyPath: _yMult
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7542643386080267367, guid: dc417cfc337d8ca438bc8556aaec9cb2, type: 3}
+      propertyPath: _jumpPower
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7542643386080267367, guid: dc417cfc337d8ca438bc8556aaec9cb2, type: 3}
       propertyPath: _dodgeSpeed

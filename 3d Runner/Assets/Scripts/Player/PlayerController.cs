@@ -27,6 +27,8 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool IsOnSlope;
     private bool _jumpOnLand;
 
+    private float _crouchAnimationTimer;
+
     [Header("Positions")]
     [SerializeField] private float _leanPositionX;
     [SerializeField] private float _startPositionX;
@@ -55,6 +57,7 @@ public class PlayerController : MonoBehaviour
     private float _nextStumbleDelay;
 
     public bool _onSlope;
+    public float _checkSlopeTimer;
     private bool _canJump;
     private bool _lastTouchingGround;
     private float _jumpTimer;
@@ -99,16 +102,21 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-        bool _onSlopeNew = CheckOnSlope();
-        if (!_onSlope && _onSlopeNew)
+        if (_checkSlopeTimer <= 0)
         {
-            m_Animator.SetFloat("RunSpeed", 1.3f);
+            bool _onSlopeNew = CheckOnSlope();
+            if (!_onSlope && _onSlopeNew)
+            {
+                m_Animator.SetFloat("RunSpeed", 1.3f);
+            }
+            if (_onSlope && !_onSlopeNew)
+            {
+                m_Animator.SetFloat("RunSpeed", 1.1f);
+            }
+            _onSlope = _onSlopeNew;
+            _checkSlopeTimer = 0.15f;
         }
-        if (_onSlope && !_onSlopeNew)
-        {
-            m_Animator.SetFloat("RunSpeed", 1.1f);
-        }
-        _onSlope = _onSlopeNew;
+        _checkSlopeTimer -= Time.deltaTime;
         float yMult = _yMult;
         if (_inJump)
             yMult = 1;
@@ -150,7 +158,7 @@ public class PlayerController : MonoBehaviour
             _newXPos = -_xWidth;
             m_last_side = SIDE.Mid;
             m_side = SIDE.Left;
-            if (m_char.isGrounded && !m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Roll") && !m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Slide"))
+            if (m_char.isGrounded && _crouchAnimationTimer <= 0)
             {
                 m_Animator.CrossFadeInFixedTime("DodgeLeft", 0.15f);
             }
@@ -160,7 +168,7 @@ public class PlayerController : MonoBehaviour
             _newXPos = 0;
             m_last_side = SIDE.Right;
             m_side = SIDE.Mid;
-            if (m_char.isGrounded && !m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Roll") && !m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Slide"))
+            if (m_char.isGrounded && _crouchAnimationTimer <= 0)
             {
                 m_Animator.CrossFadeInFixedTime("DodgeLeft", 0.15f);
             }
@@ -169,7 +177,7 @@ public class PlayerController : MonoBehaviour
         {
             _newXPos = -2 * _xWidth;
             m_last_side = m_side;
-            if (m_char.isGrounded && !m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Roll") && !m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Slide"))
+            if (m_char.isGrounded && _crouchAnimationTimer <= 0)
             {
                 m_Animator.CrossFadeInFixedTime("DodgeLeft", 0.15f);
             }
@@ -178,7 +186,7 @@ public class PlayerController : MonoBehaviour
 
     public bool CheckOnSlope()
     {
-        if (_inJump)
+        if (_inJump || !m_char.isGrounded)
             return false;
         if (Physics.CheckSphere(_slopeCheck.transform.position, .3f, _slopesMask))
         {
@@ -196,7 +204,7 @@ public class PlayerController : MonoBehaviour
             _newXPos = _xWidth;
             m_last_side = SIDE.Mid;
             m_side = SIDE.Right;
-            if (m_char.isGrounded && !m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Roll") && !m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Slide"))
+            if (m_char.isGrounded && _crouchAnimationTimer <= 0)
             {
                 m_Animator.CrossFadeInFixedTime("DodgeRight", 0.15f);
             }
@@ -206,7 +214,7 @@ public class PlayerController : MonoBehaviour
             _newXPos = 0;
             m_last_side = SIDE.Left;
             m_side = SIDE.Mid;
-            if (m_char.isGrounded && !m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Roll") && !m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Slide"))
+            if (m_char.isGrounded && _crouchAnimationTimer <= 0)
             {
                  m_Animator.CrossFadeInFixedTime("DodgeRight", 0.15f);
             }
@@ -214,7 +222,7 @@ public class PlayerController : MonoBehaviour
         {
             _newXPos = 2 * _xWidth;
             m_last_side = m_side;
-            if (m_char.isGrounded && !m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Roll") && !m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Slide"))
+            if (m_char.isGrounded && _crouchAnimationTimer <= 0)
             {
                 m_Animator.CrossFadeInFixedTime("DodgeRight", 0.15f);
             }
@@ -266,7 +274,7 @@ public class PlayerController : MonoBehaviour
             {
                 m_Animator.CrossFadeInFixedTime("Falling", .2f);
             }
-            _yPos -= _jumpPower * 11.7f * Time.fixedDeltaTime;
+            _yPos -= _jumpPower * 3f * Time.fixedDeltaTime;
             if (m_char.velocity.y < -0.05f)
             {
                 _isFalling = true;
@@ -318,6 +326,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleRoll()
     {
+        _crouchAnimationTimer -= Time.deltaTime;
         RollCounter -= Time.deltaTime;
         if (RollCounter <= 0f && _inRoll)
         {
@@ -336,6 +345,7 @@ public class PlayerController : MonoBehaviour
         }
         if (!_inRoll)
         {
+            _crouchAnimationTimer = .5f;
             RollCounter = .3f;
             _playerCollider.height = _capsuleColHeight / 3f;
             _playerCollider.center = new Vector3(0, _capsuleColCenterY / 3f + .1f, 0);
@@ -521,7 +531,7 @@ public class PlayerController : MonoBehaviour
         {
             if (_hitX == HitX.Right || _hitX == HitX.Left)
             {
-                //StartCoroutine(_camController.Shake(0.1f, 0.05f));
+                StartCoroutine(_camController.Shake(0.1f, 0.05f));
                 PlayerDie();
             }
         }

@@ -40,7 +40,6 @@ public class TerrainController : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        _lastOnSlope = false;
         _currentTerrain = TERRAIN.CITY;
         _changeTerrainCount = Random.Range(_terrainCountRangeMin, _terrainCountRangeMax);
     }
@@ -49,9 +48,9 @@ public class TerrainController : MonoBehaviour
     void Update()
     {
         if (!gameManager.IsRunning) return;
-        SlopeCheck();
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - (_currentSpeed + _currentSlopeIncrease) * Time.deltaTime);
         SpawnTiles();
+        SlopeCheck();
     }
     private void FixedUpdate()
     {
@@ -63,7 +62,7 @@ public class TerrainController : MonoBehaviour
 
     private void SlopeCheck()
     {
-        bool currentOnSlope = playerController.CheckOnSlope();
+        bool currentOnSlope = playerController._onSlope;
         if (!_lastOnSlope && currentOnSlope)
             StartCoroutine(TransitionSlopeIncrease(_slopeIncrease, 0.4f));
         else if (_lastOnSlope && !currentOnSlope)
