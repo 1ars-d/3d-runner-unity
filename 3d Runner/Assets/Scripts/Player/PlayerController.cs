@@ -274,7 +274,7 @@ public class PlayerController : MonoBehaviour
             {
                 m_Animator.CrossFadeInFixedTime("Falling", .2f);
             }
-            _yPos -= _jumpPower * 3f * Time.fixedDeltaTime;
+            _yPos -= _jumpPower * 2.7f * Time.fixedDeltaTime;
             if (m_char.velocity.y < -0.05f)
             {
                 _isFalling = true;
@@ -511,9 +511,12 @@ public class PlayerController : MonoBehaviour
         _hitX = GetHitX(col);
         _hitY = GetHitY(col);
         _hitZ = GetHitZ(col);
+        Debug.Log(_hitX);
+        Debug.Log(_hitY);
+        Debug.Log(_hitZ);
 
         if (_hitY == HitY.Low && _hitX == HitX.Mid) return;
-        if (_hitZ == HitZ.Forward && _hitX == HitX.Mid || _hitZ == HitZ.Mid && _hitX == HitX.Mid && !CheckOnSlope() && col.gameObject.tag != "Slope") // Death
+        if (_hitZ == HitZ.Forward && _hitX == HitX.Mid || _hitZ == HitZ.Mid && _hitX == HitX.Mid && !CheckOnSlope() && col.gameObject.tag != "Slope" && _hitY == HitY.Down) // Death
         {
             if (_inRoll && CheckOnSlope()) return;
             StartCoroutine(_camController.Shake(0.1f, 0.05f));

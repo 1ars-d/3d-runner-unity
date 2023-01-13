@@ -79,7 +79,8 @@ public class CopController : MonoBehaviour
             yield return null;
         }
         _isMoving = false;
-        StartCoroutine(BackUp(4f));
+        yield return new WaitForSeconds(5f);
+        StartCoroutine(BackUp(2f));
     }
 
     private IEnumerator MoveTowardsPlayer(float duration)
