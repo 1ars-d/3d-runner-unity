@@ -43,7 +43,7 @@ public class OnCollision : MonoBehaviour
 
     IEnumerator ResetColiding()
     {
-        yield return new WaitForSeconds(.01f);
+        yield return new WaitForSeconds(.001f);
         _isColliding = false;
     }
 }

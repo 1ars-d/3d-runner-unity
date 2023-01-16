@@ -101,6 +101,19 @@ public class UIController : MonoBehaviour
         _magnetTimeline.SetActive(state);
     }
 
+    public IEnumerator HideStartMenu()
+    {
+        _startMenu.GetComponent<Animator>().Play("StartMenuDisappear");
+        yield return new WaitForSeconds(1f);
+        SetStartMenu(false);
+    }
+
+    public IEnumerator ShowPlayMenu()
+    {
+        yield return new WaitForSeconds(1.5f);
+        SetPlayMenu(true);
+    }
+
     public void SetStartMenu(bool state)
     {
         _startMenu.SetActive(state);

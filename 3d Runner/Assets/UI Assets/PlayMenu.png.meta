@@ -178,7 +178,7 @@ TextureImporter:
         width: 485
         height: 191
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 35, y: 31, z: 45, w: 34}
       outline: []
       physicsShape: []
@@ -186,6 +186,174 @@ TextureImporter:
       bones: []
       spriteID: aba9acdcf8a872140b02a6e65bea81c0
       internalID: -1955504156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayMenu_3
+      rect:
+        serializedVersion: 2
+        x: 254
+        y: 566
+        width: 166
+        height: 161
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f52ccb1ff1600194294475d8dc1f61f5
+      internalID: 1245243707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayMenu_4
+      rect:
+        serializedVersion: 2
+        x: 459
+        y: 557
+        width: 178
+        height: 179
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0182f365e19ad0146a6476f9ba348f11
+      internalID: 1870581563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayMenu_5
+      rect:
+        serializedVersion: 2
+        x: 265
+        y: 336
+        width: 257
+        height: 201
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c5b77acdf0f137d458b45a103ffefd04
+      internalID: -1238990679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayMenu_6
+      rect:
+        serializedVersion: 2
+        x: 616
+        y: 339
+        width: 171
+        height: 200
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 59398922225e475478ee6e191f7e8bef
+      internalID: -385115999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayMenu_7
+      rect:
+        serializedVersion: 2
+        x: 570
+        y: 103
+        width: 260
+        height: 200
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40c072b2e3969b54b9b58d3eca282045
+      internalID: -1440815767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayMenu_8
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 188
+        width: 266
+        height: 167
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bee0c6573eca84f4c8fd2ece5a616b5b
+      internalID: -1728087563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayMenu_9
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 0
+        width: 167
+        height: 167
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 215067822840ff845bc4c6e279c7f37e
+      internalID: -1217681970
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayMenu_10
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 0
+        width: 354
+        height: 167
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7caddcfe3b6d5044982497e442bb4203
+      internalID: -453861591
       vertices: []
       indices: 
       edges: []
@@ -204,6 +372,14 @@ TextureImporter:
       PlayMenu_2: 1676923876
       PlayMenu_1: -1955504156
       PlayMenu_0: -622004694
+      PlayMenu_7: -1440815767
+      PlayMenu_10: -453861591
+      PlayMenu_6: -385115999
+      PlayMenu_3: 1245243707
+      PlayMenu_5: -1238990679
+      PlayMenu_8: -1728087563
+      PlayMenu_4: 1870581563
+      PlayMenu_9: -1217681970
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

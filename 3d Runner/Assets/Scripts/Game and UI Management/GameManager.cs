@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
     private float _currentDeathTime;
 
 
+
     // Managers
     private UIController _UIController;
     private PowerUpManager _PUManager;
@@ -57,6 +58,18 @@ public class GameManager : MonoBehaviour
         coins = 0;
         gameScore = 0;
         Application.targetFrameRate = 60;
+        if (SceneVariables.StartGameOnMainLoad)
+        {
+            SceneVariables.StartGameOnMainLoad = false;
+            StartCoroutine(StartDelayed());
+        }
+    }
+
+    private IEnumerator StartDelayed()
+    {
+        _UIController.SetStartMenu(false);
+        yield return new WaitForSeconds(.01f);
+        StartGame();
     }
 
     private void Update()
@@ -145,8 +158,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        _UIController.SetStartMenu(false);
-        _UIController.SetPlayMenu(true);
+        StartCoroutine(_UIController.HideStartMenu());
+        StartCoroutine(_UIController.ShowPlayMenu());
         IsRunning = true;
         _playerController.StartRunning();
         _cam.SetCameraPos();
@@ -156,8 +169,17 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        //Time.timeScale = 1;
+        //SceneManager.LoadScene(0);
+        GoToGameOverScene();
+    }
+
+    private void GoToGameOverScene()
+    {
         Time.timeScale = 1;
-        SceneManager.LoadScene(0);
+        SceneVariables.LastGameScore = Mathf.FloorToInt(gameScore);
+        SceneVariables.LastCollectedCoins = coins;
+        SceneManager.LoadScene(1);
     }
 
     public void OnPlayerDied()
