@@ -10,6 +10,15 @@ public class OnCollision : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.gameObject.CompareTag("WoodenCrate") && m_char._inKick)
+        {
+            other.gameObject.GetComponent<WoodenCrateController>().DestroyCrate();
+        } else if (other.gameObject.CompareTag("WoodenCrate"))
+        {
+            m_char.OnCharacterCollideHit(other);
+            StartCoroutine(ResetColiding());
+            return;
+        }
         if (other.transform.tag == "InstantDeath")
         {
             m_char.OnInstantDeatHit();
@@ -26,7 +35,7 @@ public class OnCollision : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (_isColliding || collision.transform.tag == "Player" || collision.transform.tag == "GroundTile")
+        if (_isColliding || collision.transform.tag == "Player" || collision.transform.tag == "GroundTile" || collision.gameObject.CompareTag("CrateTile"))
         {
             return;
         }

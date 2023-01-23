@@ -37,7 +37,7 @@ public class PowerUpManager : MonoBehaviour
 
     public void ItemCollectEffects()
     {
-        _playerEffects.PlayerGlowUp();
+        _playerEffects.PlayerGlowUp(new Color(1, 0.7375139f, 0.25f, 1));
         _UIController.SetLinesEffectState(true);
         _UIController.DisableLinesEffect();
     }

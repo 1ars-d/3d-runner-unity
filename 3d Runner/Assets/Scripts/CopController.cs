@@ -4,117 +4,88 @@ using UnityEngine;
 
 public class CopController : MonoBehaviour
 {
+    [Header("Cop Positions")]
+    [SerializeField] private float _defaultZDistance = 5f;
+    [SerializeField] private int _frameDistance = 50;
+    [SerializeField] private float _animationDelay = 0.5f;
     [SerializeField] private Vector3 _endPos;
     [SerializeField] private Vector3 _endRotation;
     [SerializeField] private float _moveTime;
     [SerializeField] private PlayerController _player;
     [SerializeField] private GameManager _gameManager;
 
-    private bool _isMoving;
-
-    PlayerController _playerController;
+    // Follow Logics
+    private List<Vector3> _storedPlayerPositions;
+    private int _currentFollowDistance;
+    private float _currentZDistance;
+    private bool _lerpingToNear;
 
     Animator animator;
 
     private void Start()
     {
-        _isMoving = true;
-        _playerController = _player.GetComponent<PlayerController>();
+        _storedPlayerPositions = new List<Vector3>();
+        _currentFollowDistance = _frameDistance;
+        _currentZDistance = 5f;
         animator = GetComponent<Animator>();
+        animator.SetFloat("RunSpeed", 1);
     }
 
     private void Update()
     {
-        if (!_isMoving)
+        _storedPlayerPositions.Add(_player.transform.position);
+        if (_storedPlayerPositions.Count > _currentFollowDistance)
         {
-            transform.position = new Vector3(_player.transform.position.x, _player.transform.position.y, transform.position.z);
+            transform.position = new Vector3(_storedPlayerPositions[0].x, _storedPlayerPositions[0].y, _storedPlayerPositions[0].z - _currentZDistance);
+            _storedPlayerPositions.RemoveAt(0);
         }
     }
+        
 
     private void PlayIdle()
     {
         animator.CrossFadeInFixedTime("Idle", 0.3f);
     }
 
+    public IEnumerator LerpToNear(float duration)
+    {
+        float timeElapsed = 0;
+        _lerpingToNear = true;
+        float _startDistance = _currentZDistance;
+        while (timeElapsed < duration)
+        {
+            _currentZDistance = Mathf.Lerp(_startDistance, 0, timeElapsed / duration);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        _currentFollowDistance = _frameDistance;
+        _lerpingToNear = false;
+    }
+
+    public IEnumerator LerpToDefault(float duration)
+    {
+        float timeElapsed = 0;
+        float _startDistance = _currentZDistance;
+        while (timeElapsed < duration && !_lerpingToNear)
+        {
+            _currentZDistance = Mathf.Lerp(_startDistance, _defaultZDistance, timeElapsed / duration);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        if (!_lerpingToNear)
+            _currentZDistance = _defaultZDistance;
+    }
+
 
     public void StartMoving()
     {
-        animator.Play("StartRunning");
-        StartCoroutine(MoveTowardsPlayer(_moveTime));
+        animator.Play("Running");
     }
 
-    public IEnumerator MoveTowardsPlayerDeath(float duration)
+    public IEnumerator PlayAnimation(string name, float t)
     {
-        _isMoving = true;
-        float timeElapsed = 0;
-        Vector3 startPos = transform.position;
-        float endPosZ = _player.transform.position.z - 2f;
-        while (timeElapsed < duration)
-        {
-            if (endPosZ - transform.position.z < 0.1f  && !animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-            {
-                PlayIdle();
-            }
-            float t = timeElapsed / duration;
-            t = t * t * (3f - 2f * t);
-            transform.position = Vector3.Lerp(new Vector3(_player.transform.position.x, _player.transform.position.y, startPos.z), new Vector3(_player.transform.position.x, _player.transform.position.y, endPosZ), t);
-            timeElapsed += Time.deltaTime;
-            yield return null;
-        }
-        _isMoving = false;
+        yield return new WaitForSeconds(_animationDelay);
+        animator.CrossFadeInFixedTime(name, t); 
     }
 
-    public IEnumerator MoveTowardsPlayerStumble(float duration)
-    {
-        _isMoving = true;
-        float timeElapsed = 0;
-        Vector3 startPos = transform.position;
-        float endPosZ = _player.transform.position.z - 1.8f;
-        while (timeElapsed < duration && _gameManager.IsRunning)
-        {
-            float t = timeElapsed / duration;
-            t = t * t * (3f - 2f * t);
-            transform.position = Vector3.Lerp(new Vector3(_player.transform.position.x, _player.transform.position.y, startPos.z), new Vector3(_player.transform.position.x, _player.transform.position.y, endPosZ), t);
-            timeElapsed += Time.deltaTime;
-            yield return null;
-        }
-        _isMoving = false;
-        yield return new WaitForSeconds(5f);
-        StartCoroutine(BackUp(2f));
-    }
-
-    private IEnumerator MoveTowardsPlayer(float duration)
-    {
-        _isMoving = true;
-        float timeElapsed = 0;
-        Vector3 startPos = transform.position;
-        Quaternion startRot = transform.rotation;
-        while (timeElapsed < duration && _gameManager.IsRunning)
-        {
-            float t = timeElapsed / duration;
-            t = t * t * (3f - 2f * t);
-            transform.position = Vector3.Lerp(startPos, _endPos, t);
-            transform.rotation = Quaternion.Euler(Vector3.Lerp(new Vector3(startRot.x, startRot.y, startRot.z), _endRotation, t));
-            timeElapsed += Time.deltaTime;
-            yield return null;
-        }
-        _isMoving = false;
-        _playerController._gameStarted = true;
-        StartCoroutine(BackUp(2f));
-    }
-
-    IEnumerator BackUp(float duration)
-    {
-        float timeElapsed = 0;
-        Vector3 startPos = transform.position;
-        Vector3 backUpPos = new Vector3(startPos.x, startPos.y, startPos.z - 3f);
-        while (timeElapsed < duration && _gameManager.IsRunning && !_isMoving)
-        {
-            float t = timeElapsed / duration;
-            t = Mathf.Sin(t * Mathf.PI * 0.5f);
-            transform.position = Vector3.Lerp(new Vector3(transform.position.x, transform.position.y, startPos.z), new Vector3(transform.position.x, transform.position.y, backUpPos.z), t);
-            timeElapsed += Time.deltaTime;
-            yield return null;
-        }
-     }
 }

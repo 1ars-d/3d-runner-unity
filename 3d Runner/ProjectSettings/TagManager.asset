@@ -12,6 +12,10 @@ TagManager:
   - GroundTile
   - InstantDeath
   - InstantWaterDeath
+  - PlayerKickCollider
+  - WoodenCrate
+  - CrateTile
+  - VCam
   layers:
   - Default
   - TransparentFX

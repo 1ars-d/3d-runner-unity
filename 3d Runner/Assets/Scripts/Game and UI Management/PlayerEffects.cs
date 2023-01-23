@@ -7,14 +7,19 @@ public class PlayerEffects : MonoBehaviour
 
     [SerializeField] private Material _playerMaterial;
 
-    public void PlayerGlowUp()
+    private void Start()
     {
-        StartCoroutine(PlayerGlowUpRoutine());
+        _playerMaterial.SetFloat("_FresnelPower", 20f);
     }
 
-    private IEnumerator PlayerGlowUpRoutine()
+    public void PlayerGlowUp(Color color, float glodownDelay = 0)
     {
-        _playerMaterial.SetColor("_FresnelColor", new Color(1, 0.7375139f, 0.25f, 1));
+        StartCoroutine(PlayerGlowUpRoutine(color, glodownDelay));
+    }
+
+    private IEnumerator PlayerGlowUpRoutine(Color color, float glodownDelay)
+    {
+        _playerMaterial.SetColor("_FresnelColor", color);
         float duration = 0.15f;
         float timeElapsed = 0;
         while (timeElapsed < duration)
@@ -25,6 +30,7 @@ public class PlayerEffects : MonoBehaviour
             timeElapsed += Time.deltaTime;
             yield return null;
         }
+        yield return new WaitForSeconds(glodownDelay);
         StartCoroutine(PlayerGlowDown());
     }
 

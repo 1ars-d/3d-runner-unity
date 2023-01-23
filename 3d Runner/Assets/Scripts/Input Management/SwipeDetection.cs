@@ -3,6 +3,12 @@ using UnityEngine;
 
 public class SwipeDetection : MonoBehaviour
 {
+    [Header("Double Tap")]
+    [SerializeField] private float maxTapTime = .3f;
+    [SerializeField] private float minTapTime = .1f;
+    private float _currentTapTime;
+
+    [Header("Swip")]
     [SerializeField] private float minimumDistance = .2f;
     [SerializeField, Range(0f, 1f)] private float directionThreshold = .9f;
     [SerializeField] private PlayerController playerController;
@@ -37,9 +43,24 @@ public class SwipeDetection : MonoBehaviour
         hasSwiped = false;
     }
 
+    private void Update()
+    {
+        _currentTapTime -= Time.deltaTime;
+    }
+
     private void SwipeEnd(Vector2 position, float time)
     {
-
+        if (!hasSwiped)
+        {
+            if (_currentTapTime > 0 && maxTapTime - _currentTapTime > minTapTime)
+            {
+                playerController.Kick();
+                _currentTapTime = 0;
+            } else
+            {
+                _currentTapTime = maxTapTime;
+            }
+        }
     }
 
     private void FixedUpdate()

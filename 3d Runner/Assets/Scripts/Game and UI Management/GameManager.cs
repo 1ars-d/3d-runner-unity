@@ -163,7 +163,6 @@ public class GameManager : MonoBehaviour
         IsRunning = true;
         _playerController.StartRunning();
         _cam.SetCameraPos();
-        _terrainController.StartMoving();
         _copController.StartMoving();
     }
 
@@ -187,9 +186,8 @@ public class GameManager : MonoBehaviour
         PlayerDied = true;
         IsRunning = false;
         _copController.gameObject.SetActive(true);
-        StartCoroutine(_copController.MoveTowardsPlayerDeath(1f));
+        //StartCoroutine(_copController.MoveTowardsPlayerDeath(1f));
         _UIController.SetDeathMenu(true);
-        _terrainController.StopMoving();
         _currentDeathTime = _deathTime;
     }
 

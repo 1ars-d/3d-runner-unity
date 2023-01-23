@@ -67,8 +67,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: truck Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9de47f2dc70d3ff42a94753c2d3bd215, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: 9de47f2dc70d3ff42a94753c2d3bd215, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9de47f2dc70d3ff42a94753c2d3bd215, type: 3}
+--- !u!23 &660865183244458917 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7635826562936255635, guid: 9de47f2dc70d3ff42a94753c2d3bd215, type: 3}
+  m_PrefabInstance: {fileID: 2243854001747841224}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1432897308387306905 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 9de47f2dc70d3ff42a94753c2d3bd215, type: 3}
@@ -87,6 +100,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.3107119, y: 2.8067713, z: 6.3362913}
   m_Center: {x: 0.56401753, y: 0.1348288, z: -2.4869237}
+--- !u!205 &1695626455281661064
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432897308387306905}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.5677681, y: 0.0025800467, z: -2.305368}
+  m_Size: 6.09072
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.02001083
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 660865183244458917}
+  m_Enabled: 1
 --- !u!1 &7957692740746777920 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8164078558771037576, guid: 9de47f2dc70d3ff42a94753c2d3bd215, type: 3}

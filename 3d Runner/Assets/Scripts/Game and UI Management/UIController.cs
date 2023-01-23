@@ -158,7 +158,7 @@ public class UIController : MonoBehaviour
     public void SetDeathTimer(float value, float absoluteTime)
     {
         _deathTimer.fillAmount = value;
-        _deathTimerText.SetText(Mathf.CeilToInt(absoluteTime).ToString());
+        _deathTimerText.SetText(Mathf.CeilToInt(Mathf.Clamp(absoluteTime, 0, 100)).ToString());
     }
 
 
