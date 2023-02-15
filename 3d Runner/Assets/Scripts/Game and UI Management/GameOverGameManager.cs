@@ -8,7 +8,16 @@ public class GameOverGameManager : MonoBehaviour
 {
     [Header("UI Elements")]
     [SerializeField] private TextMeshProUGUI _scoreValue;
-    [SerializeField] private TextMeshProUGUI _coinValue;
+    [SerializeField] private TextMeshProUGUI _gameCoinValue;
+    [SerializeField] private TextMeshProUGUI _highScoreValue;
+    [SerializeField] private GameObject _newHighScoreText;
+
+    [SerializeField] private TextMeshProUGUI _totalCoins;
+    [SerializeField] private TextMeshProUGUI _totalDiamonds;
+
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip _buttonSound;
+    [SerializeField] private AudioClip _scoreCountup;
 
     private float _currentDisplayScore;
     private float _currentDisplayCoins;
@@ -16,8 +25,22 @@ public class GameOverGameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(CountUpScoreToTarget(SceneVariables.LastGameScore, 1f));
-        StartCoroutine(CountUpCoinsToTarget(SceneVariables.LastCollectedCoins, 1f));
+        StartCoroutine(CountUpScoreToTarget(SceneVariables.LastGameScore, 2.48f));
+        StartCoroutine(CountUpCoinsToTarget(SceneVariables.LastCollectedCoins, 2.48f));
+        _totalCoins.SetText(PlayerPrefs.GetInt("_playerCoins").ToString());
+        _totalDiamonds.SetText(PlayerPrefs.GetInt("_playerDiamonds").ToString());
+        SoundManager.Instance.PlaySound(_scoreCountup);
+        HandleHighScore();
+        _highScoreValue.SetText(PlayerPrefs.GetInt("_playerHighscore").ToString());
+    }
+
+    private void HandleHighScore()
+    {
+        if (SceneVariables.LastGameScore > PlayerPrefs.GetInt("_playerHighscore"))
+        {
+            PlayerPrefs.SetInt("_playerHighscore", SceneVariables.LastGameScore);
+            _newHighScoreText.SetActive(true);
+        }
     }
 
     IEnumerator CountUpScoreToTarget(int targetScore, float duration)
@@ -43,17 +66,17 @@ public class GameOverGameManager : MonoBehaviour
             float t = timeElapsed / duration;
             t = t * t * (3f - 2f * t);
             _currentDisplayCoins = Mathf.Lerp(0, targetScore, t); // or whatever to get the speed you like
-            _coinValue.text = Mathf.RoundToInt(_currentDisplayCoins) + "";
+            _gameCoinValue.text = Mathf.RoundToInt(_currentDisplayCoins) + "";
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        _coinValue.text = targetScore.ToString();
+        _gameCoinValue.text = targetScore.ToString();
     }
 
-    // Update is called once per frame
-    void Update()
+
+    public void PlayButtonSound()
     {
-        
+        SoundManager.Instance.PlaySound(_buttonSound);
     }
 
     public void Play()

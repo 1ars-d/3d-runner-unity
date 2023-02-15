@@ -39,6 +39,7 @@ public class SwipeDetection : MonoBehaviour
 
     private void SwipeStart(Vector2 position, float time)
     {
+        if (Time.timeScale == 0) return;
         startPosition = position;
         hasSwiped = false;
     }

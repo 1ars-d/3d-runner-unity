@@ -28,19 +28,34 @@ public class GameManager : MonoBehaviour
     [SerializeField] private CameraController _cam;
 
     [Header("Score Management")]
-    [SerializeField] private float _scoreIncrease = 0.0003f;
+    [SerializeField] private float _scoreMultiplierIncrease = 0.1f;
     [SerializeField] private float _scoreMultiplier = 0.005f;
     [SerializeField] private float _energyDecrease = 0.005f;
     [HideInInspector] public float gameScore;
     [HideInInspector] public int coins;
     [HideInInspector] public float EnergyLevel;
     public int EnergyItemRate;
+    [SerializeField] private float _multiplierBaseDuration;
+    [SerializeField] private float _multiplierAddDuration;
     [HideInInspector] public int EnergyItemCount;
     private bool _lerpingEnergyLevel;
 
+    public int PlayerMultiplier;
+
+    public int ItemMultiplier = 1;
+    private float _itemMultiplierTimer;
+
     private float _currentDeathTime;
 
+    [Header("Sound Effects")]
+    [SerializeField] private float _homeMusicVolume;
+    [SerializeField] private float _playMusicVolume;
+    [SerializeField] private float _runningVolume;
+    [SerializeField] private AudioClip _buttonSound;
+    [SerializeField] private AudioClip _coinPickup;
+    [SerializeField] private AudioClip _powerupPickup;
 
+    private AudioSource _runningSource;
 
     // Managers
     private UIController _UIController;
@@ -49,8 +64,12 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Time.timeScale = 1;
+        SoundManager.Instance.SetMusicVolume(_homeMusicVolume);
         EnergyItemCount = EnergyItemRate;
         EnergyLevel = 1f;
+        _runningSource = GameObject.FindGameObjectWithTag("RunningSource").GetComponent<AudioSource>();
+        _runningSource.volume = 0;
         PlayerDied = false;
         _currentDeathTime = _deathTime;
         _UIController = GetComponent<UIController>();
@@ -63,6 +82,59 @@ public class GameManager : MonoBehaviour
             SceneVariables.StartGameOnMainLoad = false;
             StartCoroutine(StartDelayed());
         }
+        InitiatePrefs();
+        PlayerMultiplier = PlayerPrefs.GetInt("_playerMultiplier");
+    }
+
+    private void InitiatePrefs()
+    {
+        if (!PlayerPrefs.HasKey("_playerCoins"))
+        {
+            PlayerPrefs.SetInt("_playerCoins", 0);
+        }
+        if (!PlayerPrefs.HasKey("_playerDiamonds"))
+        {
+            PlayerPrefs.SetInt("_playerDiamonds", 0);
+        }
+        if (!PlayerPrefs.HasKey("_playerMultiplier"))
+        {
+            PlayerPrefs.SetInt("_playerMultiplier", 2);
+        }
+        if (!PlayerPrefs.HasKey("_playerHighscore"))
+        {
+            PlayerPrefs.SetInt("_playerHighscore", 0);
+        }
+        if (!PlayerPrefs.HasKey("_magnetDuration"))
+        {
+            PlayerPrefs.SetInt("_magnetDuration", 1);
+        }
+        if (!PlayerPrefs.HasKey("_multiplierDuration"))
+        {
+            PlayerPrefs.SetInt("_multiplierDuration", 1);
+        }
+    }
+
+    public void ClearPrefs()
+    {
+        PlayerPrefs.DeleteAll();
+        SceneManager.LoadScene(0);
+    }
+
+    public void ShowShopMenu()
+    {
+        _UIController.SetStartMenu(false);
+        _UIController.SetShopMenu(true);
+    }
+
+    public void HideShopMenu()
+    {
+        _UIController.SetStartMenu(true);
+        _UIController.SetShopMenu(false);
+    }
+
+    public void PlayButtonSound()
+    {
+        SoundManager.Instance.PlaySound(_buttonSound);
     }
 
     private IEnumerator StartDelayed()
@@ -80,6 +152,7 @@ public class GameManager : MonoBehaviour
         }
         DeathTimerHandler();
         EnergyLevelHandler();
+        HandleItemMultiplier();
     }
 
     private IEnumerator EnergyLerp(float addValue, float duration)
@@ -117,18 +190,33 @@ public class GameManager : MonoBehaviour
     public void ActivateMagnet()
     {
         _PUManager.ActivateMagnet();
+        SoundManager.Instance.PlaySound(_powerupPickup);
     }
 
     public void OnEnergyCollect(float energyValue)
     {
+        SoundManager.Instance.PlaySound(_powerupPickup);
         _PUManager.ItemCollectEffects();
         StartCoroutine(EnergyLerp(energyValue, 0.15f));
     }
 
+    public void OnDiamondCollect()
+    {
+        SoundManager.Instance.PlaySound(_powerupPickup);
+        _PUManager.OnDiamondCollectEffect();
+    }
+
     public void AddCoin()
     {
+        SoundManager.Instance.PlaySound(_coinPickup);
+        PlayerPrefs.SetInt("_playerCoins", PlayerPrefs.GetInt("_playerCoins") + 1);
         _UIController.SetCoinImageLarge();
         coins += 1;
+    }
+
+    public void AddDiamond()
+    {
+        PlayerPrefs.SetInt("_playerDiamonds", PlayerPrefs.GetInt("_playerDiamonds") + 1);
     }
 
     public void DecreaseDeathTime()
@@ -141,39 +229,118 @@ public class GameManager : MonoBehaviour
         if (!PlayerDied) return;
         if (_currentDeathTime <= 0)
         {
-            RestartGame();
+            GoToGameOverScene();
         }
         _currentDeathTime -= Time.deltaTime;
         _UIController.SetDeathTimer(_currentDeathTime / _deathTime, _currentDeathTime);
     }
 
+    public void ShowSettings()
+    {
+        _UIController.SetSettingsMenu(true);
+        _UIController.SetStartMenu(false);
+    }
+
+    public void HideSettingsHome()
+    {
+        _UIController.SetSettingsMenu(false);
+        _UIController.SetStartMenu(true);
+    }
+
+    public void PauseGame()
+    {
+        Time.timeScale = 0;
+        StartCoroutine(EaseMusicVolume(_homeMusicVolume));
+        _UIController.SetPauseMenu(true);
+        _runningSource.volume = 0;
+    }
+
+    public void ResumeGame()
+    {
+        Time.timeScale = 1;
+        StartCoroutine(EaseMusicVolume(_playMusicVolume));
+        _UIController.SetPauseMenu(false);
+        _runningSource.volume = _runningVolume;
+    }
+
     private void HandleGameScore()
     {
-        gameScore += _scoreMultiplier * Time.deltaTime;
-        _scoreMultiplier += _scoreIncrease;
+        gameScore += _scoreMultiplier * PlayerMultiplier * ItemMultiplier;
+        _scoreMultiplier += _scoreMultiplierIncrease;
         int _intValue = (int)gameScore;
         _UIController.SetScoreText(_intValue.ToString("000000"));
         _UIController.SetCoinsText(coins.ToString());
     }
 
+    public void OnMultiplierItemCollect()
+    {
+        SoundManager.Instance.PlaySound(_powerupPickup);
+        _PUManager.ItemCollectEffects();
+        ItemMultiplier = 2;
+        _itemMultiplierTimer = _multiplierBaseDuration + PlayerPrefs.GetInt("_multiplierDuration") * _multiplierAddDuration;
+        _UIController.ActivateMultiplierEffect();
+    }
+
+    public void GiveCoins(int amount)
+    {
+        PlayerPrefs.SetInt("_playerCoins", PlayerPrefs.GetInt("_playerCoins") + amount);
+    }
+
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    private void HandleItemMultiplier()
+    {
+        if (ItemMultiplier > 1)
+        {
+            _itemMultiplierTimer -= Time.deltaTime;
+        }
+        if (_itemMultiplierTimer <= 0 && ItemMultiplier > 1)
+        {
+            ItemMultiplier = 1;
+            _UIController.DeactivateMultiplierEffect();
+        }
+    }
+
+    private IEnumerator EaseMusicVolume(float duration)
+    {
+        float timeElapsed = 0;
+        while (timeElapsed < duration)
+        {
+            float t = timeElapsed / duration;
+            SoundManager.Instance.SetMusicVolume(Mathf.Lerp(_homeMusicVolume, _playMusicVolume, t));
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        SoundManager.Instance.SetMusicVolume(_playMusicVolume);
+    } 
+
     public void StartGame()
     {
+        _runningSource.volume = _runningVolume;
         StartCoroutine(_UIController.HideStartMenu());
         StartCoroutine(_UIController.ShowPlayMenu());
         IsRunning = true;
-        _playerController.StartRunning();
+        //_playerController.StartRunning();
         _cam.SetCameraPos();
         _copController.StartMoving();
+        StartCoroutine(EaseMusicVolume(0.5f));
+    }
+
+    public void Retry()
+    {
+        SceneVariables.StartGameOnMainLoad = true;
+        SceneManager.LoadScene(0);
     }
 
     public void RestartGame()
     {
-        //Time.timeScale = 1;
-        //SceneManager.LoadScene(0);
-        GoToGameOverScene();
+        SceneManager.LoadScene(0);
     }
 
-    private void GoToGameOverScene()
+    public void GoToGameOverScene()
     {
         Time.timeScale = 1;
         SceneVariables.LastGameScore = Mathf.FloorToInt(gameScore);
@@ -183,6 +350,7 @@ public class GameManager : MonoBehaviour
 
     public void OnPlayerDied()
     {
+        _runningSource.volume = 0;
         PlayerDied = true;
         IsRunning = false;
         _copController.gameObject.SetActive(true);

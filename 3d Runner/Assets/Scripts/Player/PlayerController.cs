@@ -83,6 +83,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool _accelerate = true;
     [SerializeField] private float _accelerationIncrease;
     [SerializeField] private float _slopeIncrease = 2f;
+
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip _switchSound;
+    [SerializeField] private AudioClip _jumpSound;
+    [SerializeField] private AudioClip _hitSound;
+    [SerializeField] private AudioClip _landingSound;
+
     private float _currentSlopeIncrease;
     private float _currentSpeed;
 
@@ -139,6 +146,10 @@ public class PlayerController : MonoBehaviour
             _onSlope = _onSlopeNew;
             _checkSlopeTimer = 0.15f;
         }
+        if (Time.deltaTime <= 0)
+        {
+            return;
+        }
         _checkSlopeTimer -= Time.deltaTime;
         float yMult = _yMult;
         if (_inJump)
@@ -151,6 +162,15 @@ public class PlayerController : MonoBehaviour
         HandleStumble();
         HandleJumpTimer();
         HandleKick();
+        SpeedIncrease();
+    }
+
+    private void SpeedIncrease()
+    {
+        if (_accelerate)
+        {
+            _currentSpeed += _accelerationIncrease * Time.fixedDeltaTime;
+        }
     }
 
     private IEnumerator TransitionSlopeIncrease(float newIncrease, float duration)
@@ -168,17 +188,29 @@ public class PlayerController : MonoBehaviour
         _currentSlopeIncrease = newIncrease;
     }
 
+    private IEnumerator PlayKickSound(float delay)
+    {
+        SoundManager.Instance.PlaySound(_jumpSound);
+        yield return null;
+        //yield return new WaitForSeconds(delay);
+        //SoundManager.Instance.PlaySound(_switchSound);
+    }
     public void StartRunning()
     {
-        StartCoroutine(GoToStartPosition(1f));
+        StartCoroutine(GoToStartPosition(0.9f));
         m_Animator.CrossFadeInFixedTime("Running", .7f);
+    }
+
+    public void StartLookAnimation()
+    {
+        m_Animator.CrossFadeInFixedTime("LeaningLook", .1f);
     }
 
     IEnumerator GoToStartPosition(float duration)
     {
         InStartAnimation = true;
         float timeElapsed = 0;
-        _slopeIncrease = 0.3f;
+        _slopeIncrease = 0f;
         while (timeElapsed < duration)
         {
             float t = timeElapsed / duration;
@@ -190,7 +222,7 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         transform.position = new Vector3(0, transform.position.y, transform.position.z);
-        StartCoroutine(TransitionSlopeIncrease(1f, 1f));
+        StartCoroutine(TransitionSlopeIncrease(1f, 2f));
         _gameStarted = true;
         InStartAnimation = false;
     }
@@ -199,6 +231,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!_gameStarted) return;
         _jumpOnLand = false;
+        SoundManager.Instance.PlaySound(_switchSound);
         if (m_side == SIDE.Mid)
         {
             _newXPos = -_xWidth;
@@ -249,6 +282,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!_gameStarted) return;
         _jumpOnLand = false;
+        SoundManager.Instance.PlaySound(_switchSound);
         if (m_side == SIDE.Mid)
         {
             _newXPos = _xWidth;
@@ -287,6 +321,7 @@ public class PlayerController : MonoBehaviour
         if (!_gameStarted) return;
         if (_kickTimer <= 0)
         {
+            StartCoroutine(PlayKickSound(.2f));
             m_Animator.CrossFadeInFixedTime("Kick", 0.1f);
             _inKick = true;
             _kickTimer = _kickPauseTime;
@@ -338,6 +373,7 @@ public class PlayerController : MonoBehaviour
                     _canJump = true;
                     Jump();
                     _jumpOnLand = false;
+                    SoundManager.Instance.PlaySound(_landingSound);
                     return;
                 }
                 if (/*m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Falling") && */!_inRoll)
@@ -355,6 +391,7 @@ public class PlayerController : MonoBehaviour
                 }
                 _isFalling = false;
                 _inJump = false;
+                SoundManager.Instance.PlaySound(_landingSound);
             }
         }
         else
@@ -394,7 +431,7 @@ public class PlayerController : MonoBehaviour
                 m_Animator.CrossFadeInFixedTime("JumpMirror", 0.1f);
                 StartCoroutine(_copController.PlayAnimation("Jump", 0.1f));
             }
-
+            SoundManager.Instance.PlaySound(_jumpSound);
             _inJump = true;
             _isFalling = false;
         } else if (_isFalling)
@@ -438,6 +475,7 @@ public class PlayerController : MonoBehaviour
         }
         if (!_inRoll)
         {
+            SoundManager.Instance.PlaySound(_jumpSound);
             _crouchAnimationTimer = .5f;
             RollCounter = .3f;
             _playerCollider.height = _capsuleColHeight / 3f;
@@ -615,7 +653,14 @@ public class PlayerController : MonoBehaviour
         Debug.Log(_hitZ);
 
         if (_hitY == HitY.Low && _hitX == HitX.Mid) return;
-        if (_hitZ == HitZ.Forward && _hitX == HitX.Mid || _hitZ == HitZ.Mid && _hitX == HitX.Mid && !CheckOnSlope() && col.gameObject.tag != "Slope" && _hitY == HitY.Down) // Death
+        SoundManager.Instance.PlaySound(_hitSound);
+        if (_hitY == HitY.Down)
+        {
+            m_char.Move(new Vector3(0, .35f, 0));
+            StartCoroutine(_camController.Shake(0.13f, 0.1f));
+            StumbleHit();
+        }
+        else if (_hitZ == HitZ.Forward && _hitX == HitX.Mid || _hitZ == HitZ.Mid && _hitX == HitX.Mid && !CheckOnSlope() && col.gameObject.tag != "Slope" && _hitY == HitY.Down) // Death
         {
             if (_inRoll && CheckOnSlope()) return;
             StartCoroutine(_camController.Shake(0.1f, 0.05f));
@@ -633,8 +678,8 @@ public class PlayerController : MonoBehaviour
         {
             if (_hitX == HitX.Right || _hitX == HitX.Left)
             {
-                StartCoroutine(_camController.Shake(0.1f, 0.05f));
-                PlayerDie();
+                StartCoroutine(_camController.Shake(0.13f, 0.1f));
+                StumbleHit();
             }
         }
         ResetCollisions();
@@ -648,10 +693,10 @@ public class PlayerController : MonoBehaviour
         float max_x = Mathf.Min(col_bounds.max.x, char_bounds.max.x);
         float average = (min_x + max_x) / 2 - col_bounds.min.x;
         HitX hit;
-        if (average > col_bounds.size.x - 0.33f)
+        if (average > col_bounds.size.x - 0.45f)
         {
             hit = HitX.Left;
-        } else if (average < 0.33)
+        } else if (average < 0.45f)
         {
             hit = HitX.Right;
         } else
@@ -669,11 +714,11 @@ public class PlayerController : MonoBehaviour
         float max_y = Mathf.Min(col_bounds.max.y, char_bounds.max.y);
         float average = ((min_y + max_y) / 2 - char_bounds.min.y) / char_bounds.size.y;
         HitY hit;
-        if (average < 0.15f)
+        if (average < 0.05f)
         {
             hit = HitY.Low;
         }
-        else if (average < 0.33f)
+        else if (average < 0.15f)
         {
             hit = HitY.Down;
         }
@@ -696,11 +741,11 @@ public class PlayerController : MonoBehaviour
         float max_z = Mathf.Min(col_bounds.max.z, char_bounds.max.z);
         float average = ((min_z + max_z) / 2 - char_bounds.min.z) / char_bounds.size.z;
         HitZ hit;
-        if (average < 0.2f)
+        if (average < 0.4f)
         {
             hit = HitZ.Backward;
         }
-        else if (average < 0.8)
+        else if (average < 0.6)
         {
             hit = HitZ.Mid;
         }

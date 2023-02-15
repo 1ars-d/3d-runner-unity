@@ -51,6 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxOffset: 0.4
   _collectEffect: {fileID: 6082110663479500357, guid: ef4776f272f813446b8bd86ff6cb45ca, type: 3}
+  _collectSound: {fileID: 8300000, guid: 11076d17313124841bc244db7fa0cbc9, type: 3}
 --- !u!95 &2987447824088385359
 Animator:
   serializedVersion: 4

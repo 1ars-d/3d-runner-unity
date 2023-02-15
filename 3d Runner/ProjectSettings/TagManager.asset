@@ -16,6 +16,8 @@ TagManager:
   - WoodenCrate
   - CrateTile
   - VCam
+  - RunningSource
+  - EffectsSource
   layers:
   - Default
   - TransparentFX

@@ -6,6 +6,7 @@ public class OnCollision : MonoBehaviour
 {
     [Header("Collision Detection")]
     [SerializeField] private PlayerController m_char;
+    [SerializeField] private UIController _UIController;
     private bool _isColliding;
 
     private void OnTriggerEnter(Collider other)
@@ -13,6 +14,7 @@ public class OnCollision : MonoBehaviour
         if (other.gameObject.CompareTag("WoodenCrate") && m_char._inKick)
         {
             other.gameObject.GetComponent<WoodenCrateController>().DestroyCrate();
+            StartCoroutine(_UIController.ChromaticAberation(1, 1f));
         } else if (other.gameObject.CompareTag("WoodenCrate"))
         {
             m_char.OnCharacterCollideHit(other);

@@ -1,5 +1,5 @@
-# Blender MTL File: 'construction.blend'
-# Material Count: 5
+# Blender MTL File: 'None'
+# Material Count: 9
 
 newmtl blinn269.002
 Ns 21.713219
@@ -13,7 +13,7 @@ illum 3
 map_Bump U:\\Dropbox\\SyntyStudios\\PolygonCity\\_Working\\Mike\\noraml.psd
 map_Kd C:\\Users\\Lars\\Documents\\Privat\\GitHub\\3d-runner-unity\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Road_03.png
 
-newmtl blinn269.005
+newmtl blinn269.004
 Ns 21.713219
 Ka 0.500000 0.500000 0.500000
 Kd 1.000000 1.000000 1.000000
@@ -49,7 +49,55 @@ illum 3
 map_Bump U:\\Dropbox\\SyntyStudios\\PolygonCity\\_Working\\Mike\\noraml.psd
 map_Kd C:\\Users\\Lars\\Documents\\Privat\\GitHub\\3d-runner-unity\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Road_03.png
 
-newmtl lambert1.001
+newmtl blinn269.008
+Ns 21.713219
+Ka 0.500000 0.500000 0.500000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Bump U:\\Dropbox\\SyntyStudios\\PolygonCity\\_Working\\Mike\\noraml.psd
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\GitHub\\3d-runner-unity\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Road_03.png
+
+newmtl blinn269.009
+Ns 21.713219
+Ka 0.500000 0.500000 0.500000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Bump U:\\Dropbox\\SyntyStudios\\PolygonCity\\_Working\\Mike\\noraml.psd
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\GitHub\\3d-runner-unity\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Road_03.png
+
+newmtl blinn269.010
+Ns 21.713219
+Ka 0.500000 0.500000 0.500000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Bump U:\\Dropbox\\SyntyStudios\\PolygonCity\\_Working\\Mike\\noraml.psd
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\GitHub\\3d-runner-unity\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Road_03.png
+
+newmtl blinn269.011
+Ns 21.713219
+Ka 0.500000 0.500000 0.500000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Bump U:\\Dropbox\\SyntyStudios\\PolygonCity\\_Working\\Mike\\noraml.psd
+map_Kd C:\\Users\\Lars\\Documents\\Privat\\GitHub\\3d-runner-unity\\3d Runner\\Assets\\ImportedPackages\\PolygonCity\\Textures\\PolygonCity_Road_03.png
+
+newmtl lambert1.002
 Ns 179.999996
 Ka 1.000000 1.000000 1.000000
 Kd 1.000000 1.000000 1.000000
