@@ -8,11 +8,16 @@ using UnityEngine;
 public class UIController : MonoBehaviour
 {
     [Header("UI Elements")]
+    [SerializeField] private GameObject _modal;
+    [SerializeField] private TextMeshProUGUI _modalText;
+    [SerializeField] private Button _modalButton;
+    [SerializeField] private TextMeshProUGUI _modalButtonText;
     [SerializeField] private GameObject _startMenu;
     [SerializeField] private GameObject _deathMenu;
     [SerializeField] private GameObject _playMenu;
     [SerializeField] private GameObject _pauseMenu;
     [SerializeField] private GameObject _shopMenu;
+    [SerializeField] private GameObject _skinChangeMenu;
     [SerializeField] private TextMeshProUGUI _scoreText;
     [SerializeField] private TextMeshProUGUI _coinsText;
     [SerializeField] private RectTransform _coinImage;
@@ -75,6 +80,19 @@ public class UIController : MonoBehaviour
         }
     }
 
+    public void OpenModal(string text, string buttonText, UnityEngine.Events.UnityAction call)
+    {
+        _modal.SetActive(true);
+        _modalText.SetText(text);
+        _modalButtonText.SetText(buttonText);
+        _modalButton.onClick.AddListener(call);
+    }
+
+    public void CloseModal()
+    {
+        _modal.SetActive(false);
+    }
+
     public IEnumerator TransitionVignette(float newIntensity, float duration)
     {
         float currentIntensity = _vignette.intensity.value;
@@ -122,6 +140,18 @@ public class UIController : MonoBehaviour
     public void OnAudioChange(float newValue)
     {
         SoundManager.Instance.ChangeMasterVolume(newValue);
+    }
+
+    public void SetSkinChangeMenu(bool state)
+    {
+        _skinChangeMenu.SetActive(state);
+    }
+
+    public IEnumerator ActivateStartMenuWithAnimation(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SetStartMenu(true);
+        _startMenu.GetComponent<Animator>().Play("StartMenuAnimateIn");
     }
 
     public void HandleEnergySymbol()

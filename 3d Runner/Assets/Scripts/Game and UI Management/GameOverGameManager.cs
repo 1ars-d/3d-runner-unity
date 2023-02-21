@@ -14,6 +14,8 @@ public class GameOverGameManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI _totalCoins;
     [SerializeField] private TextMeshProUGUI _totalDiamonds;
+    [SerializeField] private List<GameObject> _skins = new();
+
 
     [Header("Sound Effects")]
     [SerializeField] private AudioClip _buttonSound;
@@ -25,6 +27,8 @@ public class GameOverGameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _skins.ForEach(skin => skin.SetActive(false));
+        _skins[PlayerPrefs.GetInt("_selectedSkin")].SetActive(true);
         StartCoroutine(CountUpScoreToTarget(SceneVariables.LastGameScore, 2.48f));
         StartCoroutine(CountUpCoinsToTarget(SceneVariables.LastCollectedCoins, 2.48f));
         _totalCoins.SetText(PlayerPrefs.GetInt("_playerCoins").ToString());

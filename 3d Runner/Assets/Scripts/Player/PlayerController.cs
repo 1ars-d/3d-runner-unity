@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
     private float _capsuleColHeight;
     private float _capsuleColCenterY;
 
-    private Animator m_Animator;
+    public Animator m_Animator;
     public bool _gameStarted;
     public bool InStartAnimation;
 

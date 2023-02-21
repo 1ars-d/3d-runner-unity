@@ -21,6 +21,8 @@ public class ShopController : MonoBehaviour
     [SerializeField] private Button _multiplierBuy;
     [SerializeField] private int _multiplierPrice;
 
+    [SerializeField] private UIController _UIController;
+
 
     // Start is called before the first frame update
     void Start()
@@ -53,7 +55,11 @@ public class ShopController : MonoBehaviour
     public void MagnetBuy()
     {
         int _lastTotalCoins = PlayerPrefs.GetInt("_playerCoins");
-        if (_lastTotalCoins < _magnetPrice) return;
+        if (_lastTotalCoins < _magnetPrice)
+        {
+            _UIController.OpenModal("You don't have enough coins to upgrade!", "Get More", () => _UIController.CloseModal());
+            return;
+        }
         PlayerPrefs.SetInt("_playerCoins", _lastTotalCoins - _magnetPrice);
         _totalCoins.SetText((_lastTotalCoins - _magnetPrice).ToString());
         int _currentLevel = PlayerPrefs.GetInt("_magnetDuration");
@@ -68,7 +74,11 @@ public class ShopController : MonoBehaviour
     public void MultiplierBuy()
     {
         int _lastTotalCoins = PlayerPrefs.GetInt("_playerCoins");
-        if (_lastTotalCoins < _multiplierPrice) return;
+        if (_lastTotalCoins < _multiplierPrice)
+        {
+            _UIController.OpenModal("You don't have enough coins to upgrade!", "Get More", () => _UIController.CloseModal());
+            return;
+        }
         PlayerPrefs.SetInt("_playerCoins", _lastTotalCoins - _multiplierPrice);
         _totalCoins.SetText((_lastTotalCoins - _multiplierPrice).ToString());
         int _currentLevel = PlayerPrefs.GetInt("_multiplierDuration");

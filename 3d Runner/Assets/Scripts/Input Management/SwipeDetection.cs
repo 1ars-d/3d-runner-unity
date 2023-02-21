@@ -20,6 +20,7 @@ public class SwipeDetection : MonoBehaviour
 
     private bool hasSwiped;
 
+
     private void Awake()
     {
         inputManager = InputManager.Instance;
@@ -35,6 +36,11 @@ public class SwipeDetection : MonoBehaviour
     {
         inputManager.OnStartTouch -= SwipeStart;
         inputManager.OnEndTouch -= SwipeEnd;
+    }
+
+    public void HasSwipedFalse()
+    {
+        hasSwiped = true;
     }
 
     private void SwipeStart(Vector2 position, float time)

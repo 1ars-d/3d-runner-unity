@@ -16,12 +16,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private TerrainController _terrainController;
     [SerializeField] private CopController _copController;
+    [SerializeField] private SkinChangeController _skinChangeController;
 
     [Header("Other GOs")]
     [SerializeField] private GameObject _terrainGO;
+    [SerializeField] private GameObject _multiplierTimeline;
+    [SerializeField] private Image _multiplierBar;
+    [SerializeField] private LockCameraY _camMaxScript;
 
     [Header("Other Values")]
     [SerializeField] private float _deathTime = 3f;
+    [SerializeField] private SwipeDetection _swipeDetection;
 
     [Header("Camera")]
     [SerializeField] private GameObject _cameraGO;
@@ -54,6 +59,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AudioClip _buttonSound;
     [SerializeField] private AudioClip _coinPickup;
     [SerializeField] private AudioClip _powerupPickup;
+    [SerializeField] private AudioClip _powerupRunOutEffect;
 
     private AudioSource _runningSource;
 
@@ -64,6 +70,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _skinChangeController.ActivateSelectedSkin();
         Time.timeScale = 1;
         SoundManager.Instance.SetMusicVolume(_homeMusicVolume);
         EnergyItemCount = EnergyItemRate;
@@ -84,6 +91,8 @@ public class GameManager : MonoBehaviour
         }
         InitiatePrefs();
         PlayerMultiplier = PlayerPrefs.GetInt("_playerMultiplier");
+        _camMaxScript = GameObject.FindGameObjectWithTag("VCam").GetComponent<LockCameraY>();
+        _camMaxScript.enabled = false;
     }
 
     private void InitiatePrefs()
@@ -112,6 +121,25 @@ public class GameManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("_multiplierDuration", 1);
         }
+        if (!PlayerPrefs.HasKey("_selectedSkin"))
+        {
+            PlayerPrefs.SetInt("_selectedSkin", 0);
+        }
+        InitializeSkins();
+    }
+
+    private void InitializeSkins()
+    {
+        for (int i = 0; i < _skinChangeController._skins.Count - 1; i++)
+        {
+            string key = "_skin_" + i.ToString();
+            if (!PlayerPrefs.HasKey(key))
+            {
+                PlayerPrefs.SetInt(key, 0);
+            }
+            PlayerPrefs.SetInt("_skin_0", 1);
+        }
+        
     }
 
     public void ClearPrefs()
@@ -249,6 +277,7 @@ public class GameManager : MonoBehaviour
 
     public void PauseGame()
     {
+        _swipeDetection.HasSwipedFalse();
         Time.timeScale = 0;
         StartCoroutine(EaseMusicVolume(_homeMusicVolume));
         _UIController.SetPauseMenu(true);
@@ -257,6 +286,7 @@ public class GameManager : MonoBehaviour
 
     public void ResumeGame()
     {
+        _swipeDetection.HasSwipedFalse();
         Time.timeScale = 1;
         StartCoroutine(EaseMusicVolume(_playMusicVolume));
         _UIController.SetPauseMenu(false);
@@ -275,6 +305,7 @@ public class GameManager : MonoBehaviour
     public void OnMultiplierItemCollect()
     {
         SoundManager.Instance.PlaySound(_powerupPickup);
+        _multiplierTimeline.SetActive(true);
         _PUManager.ItemCollectEffects();
         ItemMultiplier = 2;
         _itemMultiplierTimer = _multiplierBaseDuration + PlayerPrefs.GetInt("_multiplierDuration") * _multiplierAddDuration;
@@ -295,13 +326,33 @@ public class GameManager : MonoBehaviour
     {
         if (ItemMultiplier > 1)
         {
+            _multiplierBar.fillAmount = _itemMultiplierTimer / (_multiplierBaseDuration + PlayerPrefs.GetInt("_multiplierDuration") * _multiplierAddDuration);
             _itemMultiplierTimer -= Time.deltaTime;
         }
         if (_itemMultiplierTimer <= 0 && ItemMultiplier > 1)
         {
             ItemMultiplier = 1;
             _UIController.DeactivateMultiplierEffect();
+            SoundManager.Instance.PlaySound(_powerupRunOutEffect);
+            _multiplierTimeline.SetActive(false);
         }
+    }
+
+    public void HideChangeSkinMenu()
+    {
+        _playerController.m_Animator.CrossFadeInFixedTime("Leaning", 2f);
+        _UIController.SetSkinChangeMenu(false);
+        _skinChangeController.ActivateSelectedSkin();
+        StartCoroutine(_UIController.ActivateStartMenuWithAnimation(.4f));
+        StartCoroutine(_cam.ChangeToLeanView(1f));
+    }
+
+    public void ShowChangeSkinMenu()
+    {
+        _playerController.m_Animator.CrossFadeInFixedTime("StandIdle", 2f);
+        _UIController.SetSkinChangeMenu(true);
+        _UIController.SetStartMenu(false);
+        StartCoroutine(_cam.ChangeSkinView(1f));
     }
 
     private IEnumerator EaseMusicVolume(float duration)
@@ -319,6 +370,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        _camMaxScript.enabled = true;
         _runningSource.volume = _runningVolume;
         StartCoroutine(_UIController.HideStartMenu());
         StartCoroutine(_UIController.ShowPlayMenu());

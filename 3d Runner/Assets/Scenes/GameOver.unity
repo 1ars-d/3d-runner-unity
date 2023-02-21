@@ -2684,7 +2684,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -56, y: -174}
+  m_AnchoredPosition: {x: -56, y: -121.03705}
   m_SizeDelta: {x: 64.7638, y: 65.1277}
   m_Pivot: {x: 0.49999994, y: 0.5000011}
 --- !u!95 &396682171
@@ -5334,6 +5334,16 @@ MonoBehaviour:
   _newHighScoreText: {fileID: 326540235}
   _totalCoins: {fileID: 851284789}
   _totalDiamonds: {fileID: 1060501488}
+  _skins:
+  - {fileID: 5834025410672849630}
+  - {fileID: 5834025410672805098}
+  - {fileID: 5834025410672787676}
+  - {fileID: 5834025410672796822}
+  - {fileID: 5834025410672833188}
+  - {fileID: 5834025410672824506}
+  - {fileID: 5834025410672827090}
+  - {fileID: 5834025410672908692}
+  - {fileID: 5834025410672889382}
   _buttonSound: {fileID: 8300000, guid: e23a646f593f7b141a25bb97a46f54ae, type: 3}
   _scoreCountup: {fileID: 8300000, guid: d87da7bd88467764eb078b98fae49e6c, type: 3}
 --- !u!4 &876810229
@@ -5889,7 +5899,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -493, y: -172}
+  m_AnchoredPosition: {x: -493, y: -118}
   m_SizeDelta: {x: 560.909, y: 100.608}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!4 &1003339331 stripped
@@ -10198,7 +10208,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 662.99994, y: -172}
+  m_AnchoredPosition: {x: 662.99994, y: -118}
   m_SizeDelta: {x: 560.909, y: 100.60803}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1698071753

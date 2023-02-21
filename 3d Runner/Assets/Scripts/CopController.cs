@@ -33,6 +33,7 @@ public class CopController : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale == 0) return;
         _storedPlayerPositions.Add(_player.transform.position);
         if (_storedPlayerPositions.Count > _currentFollowDistance)
         {

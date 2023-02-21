@@ -1,0 +1,40 @@
+{
+  "prices": [
+    {
+      "currency": "c",
+      "price": 0
+    },
+    {
+      "currency": "c",
+      "price": 5000
+    },
+    {
+      "currency": "c",
+      "price": 10000
+    },
+    {
+      "currency": "c",
+      "price": 20000
+    },
+    {
+      "currency": "c",
+      "price": 30000
+    },
+    {
+      "currency": "c",
+      "price": 5000
+    },
+    {
+      "currency": "c",
+      "price": 5000
+    },
+    {
+      "currency": "c",
+      "price": 5000
+    },
+    {
+      "currency": "d",
+      "price": 100
+    }
+  ]
+}

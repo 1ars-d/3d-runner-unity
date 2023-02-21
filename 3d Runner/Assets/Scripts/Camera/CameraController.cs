@@ -11,6 +11,9 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Vector3 _startCameraRotation;
     [SerializeField] private Vector3 _lookAtCopPosition;
     [SerializeField] private Vector3 _lookAtCopRotation;
+    [SerializeField] private Vector3 _skinChangePosition;
+    [SerializeField] private Vector3 _skinChangeRotation;
+    [SerializeField] private float _skinChangeFOV;
     [SerializeField] private float _startFOV;
     [SerializeField] private float _endFOV;
     private Vector3 _leanCameraOffset;
@@ -30,6 +33,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private GameObject _copCar1;
     [SerializeField] private GameObject _copCar2;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,7 +49,6 @@ public class CameraController : MonoBehaviour
     {
         _camAnimator.enabled = false;
         _leanCameraOffset = transposer.m_FollowOffset;
-        Debug.Log(_leanCameraOffset);
         SetLeanRotation();
         StartCoroutine(LookAtCop(_lookAtCopDuration));
     }
@@ -78,6 +81,48 @@ public class CameraController : MonoBehaviour
             rotation.z = transform.eulerAngles.z - 360f;
         }
         _leanCameraRotation = rotation;
+    }
+
+    public IEnumerator ChangeToLeanView(float duration)
+    {
+        float timeElapsed = 0;
+        Quaternion _currentRotation = transform.rotation;
+        Vector3 _currentOffset = transposer.m_FollowOffset;
+        while (timeElapsed < duration)
+        {
+            float t = timeElapsed / duration;
+            t = t * t * (3f - 2f * t);
+            v_cam.m_Lens.FieldOfView = Mathf.Lerp(_skinChangeFOV, _startFOV, t);
+            transform.rotation = Quaternion.Lerp(_currentRotation, Quaternion.Euler(_leanCameraRotation), t);
+            transposer.m_FollowOffset = Vector3.Lerp(_currentOffset, _leanCameraOffset, t);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        transform.rotation = Quaternion.Euler(_leanCameraRotation);
+        transposer.m_FollowOffset = _leanCameraOffset;
+        _camAnimator.enabled = true;
+    }
+
+    public IEnumerator ChangeSkinView(float duration)
+    {
+        _leanCameraOffset = transposer.m_FollowOffset;
+        SetLeanRotation();
+        _camAnimator.enabled = false;
+        float timeElapsed = 0;
+        Quaternion _currentRotation = transform.rotation;
+        Vector3 _currentOffset = transposer.m_FollowOffset;
+        while (timeElapsed < duration)
+        {
+            float t = timeElapsed / duration;
+            t = t * t * (3f - 2f * t);
+            v_cam.m_Lens.FieldOfView = Mathf.Lerp(_startFOV, _skinChangeFOV, t);
+            transform.rotation = Quaternion.Lerp(_currentRotation, Quaternion.Euler(_skinChangeRotation), t);
+            transposer.m_FollowOffset = Vector3.Lerp(_currentOffset, _skinChangePosition, t);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        transform.rotation = Quaternion.Euler(_skinChangeRotation);
+        transposer.m_FollowOffset = _skinChangePosition;
     }
 
     private IEnumerator LookAtCop(float duration)
