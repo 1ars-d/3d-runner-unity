@@ -1069,8 +1069,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _createWhole: {fileID: 3270464932168856143}
   _createDesctructed: {fileID: 5203588180207329626}
-  _scoreText: {fileID: 6830899832661385634}
+  _scoreText: {fileID: 2854220706308834431}
   _breakSound: {fileID: 8300000, guid: dbd14080672f8344a8fb58f771c010f9, type: 3}
+  _gameManager: {fileID: 0}
+  _coinValue: 0
+  _coinSoundEffect: {fileID: 0}
 --- !u!65 &2464938922125353073
 BoxCollider:
   m_ObjectHideFlags: 0

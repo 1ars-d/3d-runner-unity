@@ -13,7 +13,7 @@ public enum HitZ { Forward, Mid, Backward, None }
 public class PlayerController : MonoBehaviour
 {
     [Header("Player Movement")]
-    [SerializeField] private SIDE m_side = SIDE.Mid;
+    [SerializeField] public SIDE m_side = SIDE.Mid;
     [SerializeField] private SIDE m_last_side = SIDE.Mid;
     [SerializeField] private float _dodgeSpeed;
     [SerializeField] private float _xWidth;
@@ -37,9 +37,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _startPositionX;
 
     private float _yPos;
-    private float _newXPos = 0f;
+    public float _newXPos = 0f;
     public CharacterController m_char;
-    private float _xPos;
+    public float _xPos;
     private float _colHeight;
     private float _colCenterY;
     private float _capsuleColHeight;
@@ -67,6 +67,8 @@ public class PlayerController : MonoBehaviour
     private float _jumpTimer;
     private bool _fallingWater;
     public bool _inKick;
+
+    private bool _reviving = false;
 
     [Header("Script and GameObject Refs")]
     [SerializeField] private CameraController _camController;
@@ -163,6 +165,28 @@ public class PlayerController : MonoBehaviour
         HandleJumpTimer();
         HandleKick();
         SpeedIncrease();
+    }
+
+    public void OnRevive()
+    {
+        _reviving = true;
+        GetComponent<RagdollEnabler>().EnableAnimator();
+        transform.rotation = Quaternion.identity;
+        m_Animator.CrossFadeInFixedTime("Running", .7f);
+        _gameStarted = true;
+        StartCoroutine(DisableReviving(.5f));
+        if (_stumbling)
+        {
+            StartCoroutine(_copController.LerpToDefault(2f));
+            _stumbling = false;
+            _starsAnimator.CrossFadeInFixedTime("fade_away", .1f);
+        }
+    }
+
+    private IEnumerator DisableReviving(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _reviving = false;
     }
 
     private void SpeedIncrease()
@@ -321,6 +345,7 @@ public class PlayerController : MonoBehaviour
         if (!_gameStarted) return;
         if (_kickTimer <= 0)
         {
+            _gameManager.DecreaseEnergy(0.2f);
             StartCoroutine(PlayKickSound(.2f));
             m_Animator.CrossFadeInFixedTime("Kick", 0.1f);
             _inKick = true;
@@ -338,7 +363,7 @@ public class PlayerController : MonoBehaviour
                     _yPos = _kickJumpPower;
                 }
             }
-            
+
         }
     }
 
@@ -521,6 +546,25 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void OnExplosion()
+    {
+        if (!_gameStarted) return;
+        _yPos = _jumpPower;
+        if (Random.Range(0, 2) == 0)
+        {
+            m_Animator.CrossFadeInFixedTime("Jump", 0.1f);
+            StartCoroutine(_copController.PlayAnimation("Jump", 0.1f));
+        }
+        else
+        {
+            m_Animator.CrossFadeInFixedTime("JumpMirror", 0.1f);
+            StartCoroutine(_copController.PlayAnimation("Jump", 0.1f));
+        }
+        SoundManager.Instance.PlaySound(_jumpSound);
+        _inJump = true;
+        _isFalling = false;
+    }
+
     private void StumbleHit()
     {
         if (_nextStumbleDelay > 0 || !_gameManager.IsRunning) return;
@@ -554,14 +598,19 @@ public class PlayerController : MonoBehaviour
 
     public void OnEnergyDead()
     {
-        StartCoroutine(PlayFallOverAnimation(.001f));
+        StartCoroutine(_copController.LerpToDeath(1));
+        GetComponent<RagdollEnabler>().EnableRagdoll();
+        GetComponent<ImpactReceiver>().AddImpact(new Vector3(2, 0, -1), 4);
         _gameManager.OnPlayerDied();
         _gameStarted = false;
     }
 
     private void PlayerDie()
     {
-        StartCoroutine(PlayDieAnimation(.001f));
+        //StartCoroutine(PlayDieAnimation(.001f));
+        StartCoroutine(_copController.LerpToDeath(1));
+        GetComponent<RagdollEnabler>().EnableRagdoll();
+        GetComponent<ImpactReceiver>().AddImpact(new Vector3(2, 0, -1), 4);
         _gameManager.OnPlayerDied();
         _gameStarted = false;
     }
@@ -586,7 +635,6 @@ public class PlayerController : MonoBehaviour
 
     private void HitSide()
     {
-        StumbleHit();
         if (m_last_side == SIDE.Right && m_side == SIDE.Mid)
         {
             _newXPos = _xWidth;
@@ -640,11 +688,12 @@ public class PlayerController : MonoBehaviour
                 m_Animator.CrossFadeInFixedTime("DodgeRight", 0.15f);
             }
         }
+        StumbleHit();
     }
 
     public void OnCharacterCollideHit(Collider col)
     {
-        if (!_gameStarted) return;
+        if (!_gameStarted || _reviving) return;
         _hitX = GetHitX(col);
         _hitY = GetHitY(col);
         _hitZ = GetHitZ(col);

@@ -168,7 +168,7 @@ public class UIController : MonoBehaviour
 
     public void SetEnergyBarValue(float value)
     {
-        _colorAdjustments.saturation.value = value*100 - 100;
+        //_colorAdjustments.saturation.value = value*100 - 100;
         _energyBar.fillAmount = value;
         _energyBar.color = new Color(1, value*1.3f, 0);
         _energySymbol.color = new Color(1, value*1.3f, 0);

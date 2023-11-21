@@ -63,6 +63,26 @@ public class CopController : MonoBehaviour
         _lerpingToNear = false;
     }
 
+    public IEnumerator LerpToDeath(float duration)
+    {
+        float timeElapsed = 0;
+        _lerpingToNear = true;
+        float _startDistance = _currentZDistance;
+        while (timeElapsed < duration)
+        {
+            if (transform.position.z > _player.transform.position.z - 2 && animator.GetCurrentAnimatorClipInfo(0)[0].clip.name != "Stand")
+            {
+                animator.CrossFadeInFixedTime("Stand", .5f);
+
+            }
+            _currentZDistance = Mathf.Lerp(_startDistance, 0, timeElapsed / duration);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        _currentFollowDistance = _frameDistance;
+        _lerpingToNear = false;
+    }
+
     public IEnumerator LerpToDefault(float duration)
     {
         float timeElapsed = 0;

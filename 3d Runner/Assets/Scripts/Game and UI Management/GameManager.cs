@@ -22,7 +22,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _terrainGO;
     [SerializeField] private GameObject _multiplierTimeline;
     [SerializeField] private Image _multiplierBar;
-    [SerializeField] private LockCameraY _camMaxScript;
+    [SerializeField] private GameObject _reviveSmokeEffect;
+    [SerializeField] private GameObject _reviveGlowEffect;
+    private LockCameraY _camMaxScript;
 
     [Header("Other Values")]
     [SerializeField] private float _deathTime = 3f;
@@ -221,11 +223,59 @@ public class GameManager : MonoBehaviour
         SoundManager.Instance.PlaySound(_powerupPickup);
     }
 
+    private IEnumerator DisableReviveSmoke(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _reviveSmokeEffect.SetActive(false);
+    }
+
+    private IEnumerator DisableReviveGlow(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _reviveGlowEffect.GetComponent<Animator>().CrossFadeInFixedTime("item_glow_fade_out", 0.4f);
+        yield return new WaitForSeconds(2);
+        _reviveGlowEffect.SetActive(false);
+    }
+
+    public void Revive()
+    {
+        _terrainController.OnRevive();
+        _UIController.SetDeathMenu(false);
+        _UIController.SetPlayMenu(true);
+        IsRunning = true;
+        PlayerDied = false;
+        _playerController.OnRevive();
+        _runningSource.volume = _runningVolume;
+        EnergyLevel = 1;
+        _playerController._newXPos = 0;
+        _playerController.m_side = SIDE.Mid;
+        StartCoroutine(_UIController.TransitionVignette(0.344f, 0.5f));
+        _reviveSmokeEffect.SetActive(true);
+        _reviveGlowEffect.SetActive(true);
+        StartCoroutine(DisableReviveGlow(0f));
+        StartCoroutine(DisableReviveSmoke(4f));
+        GetComponent<PowerUpManager>().DeactivateMagnet();
+        ItemMultiplier = 1;
+        _UIController.DeactivateMultiplierEffect();
+        _multiplierTimeline.SetActive(false);
+    }
+
+    public void OnExplosion()
+    {
+        _playerController.OnExplosion();
+    }
+
+   
     public void OnEnergyCollect(float energyValue)
     {
         SoundManager.Instance.PlaySound(_powerupPickup);
         _PUManager.ItemCollectEffects();
         StartCoroutine(EnergyLerp(energyValue, 0.15f));
+    }
+
+    public void DecreaseEnergy(float energyDecreaseValue)
+    {
+        StartCoroutine(EnergyLerp(-energyDecreaseValue, 0.15f));
     }
 
     public void OnDiamondCollect()

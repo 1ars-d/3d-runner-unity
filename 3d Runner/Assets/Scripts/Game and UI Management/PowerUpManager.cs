@@ -30,6 +30,13 @@ public class PowerUpManager : MonoBehaviour
         HandlePowerUps();
     }
 
+    public void DeactivateMagnet()
+    {
+        MagnetIsActive = false;
+        _UIController.SetMagnetTimeLineState(false);
+        _rightArmMagnet.SetActive(false);
+    }
+
     public void ActivateMagnet()
     {
         MagnetIsActive = true;
