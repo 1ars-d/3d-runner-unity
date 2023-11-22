@@ -1,4 +1,4 @@
-# 3D Mobile Endless Runner made in Unity
+# 3D Mobile Endless Runner made in Unity (Unfinished)
 
 To play on Android install [output.apk](builds/output.apk) on your smartphone or emulator
 
