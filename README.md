@@ -4,5 +4,5 @@ To play on Android install [output.apk](builds/output.apk) on your smartphone or
 
 ## Showcase
 
-<video src="showcase.mp4" controls="controls" style="max-width: 730px;">
-</video>
+https://github.com/Coder-Lars/3d-runner-unity/assets/71517515/a4703060-47f2-4134-8bc9-3c55f7bd87a2
+
